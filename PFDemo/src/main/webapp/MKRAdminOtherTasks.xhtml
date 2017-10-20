@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Math Kangaroo Admin Other Tasks</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="css/maincss.css" rel="stylesheet" type="text/css"/>        
+        <link rel="stylesheet" href="css/newcss.css" type="text/css"/>
+        <link rel="stylesheet" href="css/newcss1.css" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript">
+
+            window.onload = function()
+            {
+                var separator = " - ";
+                var dateTime = new Date();
+                var formattedDateTime = dateTime.toLocaleDateString();
+                var divObject = document.getElementById("dateTimeValue");
+                divObject.innerHTML = formattedDateTime;
+            };
+        </script>
+    </h:head>
+    <h:body>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{userLogin.isAdminLoggedIn}" />  
+        </f:metadata>
+        <div id="wrapper">
+            <ui:include src="main_header.html"/>
+            <div class="container">
+                <h:form id ="mainform" >
+                    <h:outputLabel styleClass="logotxt5" style="font-weight: normal;text-align: center;" value="Admin - Other Tasks" />
+                    <p:panel rendered="#{userLogin.adminLogged}" style="float:right;padding-right: 30px;border:none;">
+                        <h:outputLabel style="font-weight: normal;text-align: center;" value="Welcome, #{userLogin.user.userFirstName} #{userLogin.user.userLastName}!" />
+                        <p:spacer width="25px"/>
+                        <p:commandLink actionListener="#{userLogin.logOff()}" update="mainform" >
+                            <h:outputText value="Log off" style="font-size: 14px;color:blue;" />
+                        </p:commandLink>
+                    </p:panel>
+                    <p:panel style="width:80%;border:none;min-height: 400px;margin-top:100px">
+                        <h:panelGrid columns="2" columnClasses="column1,column2">
+                            <p:commandLink update=":formCreateStudent" oncomplete="dlgCreateStudent.show()"
+                                           actionListener="#{adminBean.prepareCreateStudent()}" >
+                                <h:outputText value="Create new student"
+                                              style="font-size: 16px;color:blue;" />
+                            </p:commandLink>
+                            <h:outputText style="font-family: verdana;font-size:14px;font-weight: lighter;color:black;" value="Create a new student record." />
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:commandButton ajax="false" style="font-size: 14px;background-color: orange;margin-left: 5px;margin-top: 15px;border-radius: 5px" 
+                                     value="Back" 
+                                     action="MKRAdminHome" /> 
+
+                </h:form>
+
+                <p:dialog id="dialogMessage" widgetVar="dlgMessage" modal="true" header="MESSAGE" width="450px" >
+                    <h:form id="dlgMessageForm">
+                        <p:panel styleClass="centeredItemsPanel" >
+                            <p:panelGrid columns="1" style="border: none;text-align: center">
+                                <h:outputLabel value="#{adminBean.dialogMessageText}"/>
+                                <p:commandButton value="OK" oncomplete="dlgMessage.hide()" 
+                                                 styleClass="ui-priority-primary" 
+                                                 style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" /> 
+                                <p:commandLink oncomplete="dlgMessage.hide()" value="Manage This Student" action="MKRAdminStudent" ajax="false" 
+                                               style="font-size: 12px;">
+                                    <f:setPropertyActionListener value="#{adminBean.studentToUpdate}" target="#{adminBean.selectedStudent}" />  
+                                </p:commandLink> 
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dialogCreateStudent" widgetVar="dlgCreateStudent" modal="true" header="CREATE STUDENT DATA:">
+                    <h:form id="formCreateStudent">
+                        <p:message id="studentValidateMessage" for=":formCreateStudent:createButton"/>
+                        <p:panel>
+                            <p:panelGrid columns="2" columnClasses="column1,column2" styleClass="generalPanelStyle2">
+                                <h:outputLabel value="First Name:" />  
+                                <p:inputText id="first" value="#{adminBean.studentToUpdate.firstName}" label="First Name" maxlength="30">  
+                                </p:inputText>  
+                                <h:outputLabel value="Middle Initial:" />  
+                                <p:inputText maxlength="1" value="#{adminBean.studentToUpdate.middleName}" label="Middle Initial" style="width: 20px">  
+                                </p:inputText>  
+                                <h:outputLabel value="Last Name:" />  
+                                <p:inputText id="last" value="#{adminBean.studentToUpdate.lastName}" label="Last Name" maxlength="30">  
+                                </p:inputText>  
+                                <h:outputLabel value="Gender:" />  
+                                <h:selectOneMenu styleClass="generalPanelSelectOneMenu" value="#{adminBean.studentToUpdate.genderCode}" label="#{adminBean.studentToUpdate.gender}" >
+                                    <f:selectItems value="#{userLogin.commonData.genders}" var="gender" itemLabel="#{gender.codeAlpha}" itemValue="#{gender.code}" />
+                                </h:selectOneMenu>
+                                <h:outputLabel value="Parent/Guardian E-mail:" />  
+                                <p:inputText value="#{adminBean.studentToUpdate.parentGuardianEmail}" label="Parent E-mail" maxlength="50">  
+                                </p:inputText>  
+                                <h:outputLabel value="Student E-mail:" />  
+                                <p:inputText value="#{adminBean.studentToUpdate.studentEmail}" label="Student E-mail" maxlength="50">  
+                                </p:inputText>  
+                                <h:outputLabel value="Address:" />  
+                                <p:inputText value="#{adminBean.studentToUpdate.address1}" label="Address" maxlength="50">  
+                                </p:inputText>  
+                                <h:outputLabel value="City:" />  
+                                <p:inputText value="#{adminBean.studentToUpdate.city}" label="City" maxlength="50">  
+                                </p:inputText>  
+                                <h:outputLabel value="State:" />  
+                                <h:selectOneMenu styleClass="generalPanelSelectOneMenu" value="#{adminBean.studentToUpdate.state}" label="#{adminBean.studentToUpdate.stateName}" >
+                                    <f:selectItems value="#{userLogin.commonData.states}" var="state" itemLabel="#{state.description}" itemValue="#{state.codeAlpha}" />
+                                </h:selectOneMenu>
+                                <h:outputLabel value="Zip code:" />  
+                                <p:inputMask mask="99999" value="#{adminBean.studentToUpdate.zipcode}" label="Zip code" style="width: 50px"/>  
+                                <h:outputLabel value="Comment About Student:" />  
+                                <p:inputTextarea rows="5" cols="30" value="#{adminBean.studentToUpdate.comment}" style="width: 250px;height: 100px" />
+                            </p:panelGrid>
+                            <p:commandButton id="createButton" value="Create" update=":dlgMessageForm"
+                                             action="#{adminBean.createStudentData()}" styleClass="ui-priority-primary" 
+                                             style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" /> 
+                            <p:commandButton value="Cancel" oncomplete="dlgCreateStudent.hide()" 
+                                             style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" />
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <div id="footer">Copyright © 2003 of Math Kangaroo in USA, NFP Inc. All Rights Reserved.</div>
+            </div>
+        </div>
+    </h:body>
+</html>
+
+

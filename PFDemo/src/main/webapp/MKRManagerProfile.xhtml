@@ -1,0 +1,167 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Math Kangaroo Manager Profile</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="css/maincss.css" rel="stylesheet" type="text/css"/>        
+        <link rel="stylesheet" href="css/newcss.css" type="text/css"/>
+        <link rel="stylesheet" href="css/newcss1.css" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript">
+
+            window.onload = function()
+            {
+                var separator = " - ";
+                var dateTime = new Date();
+                var formattedDateTime = dateTime.toLocaleDateString();
+                var divObject = document.getElementById("dateTimeValue");
+                divObject.innerHTML = formattedDateTime;
+            };
+        </script>
+    </h:head>
+    <h:body>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{userLogin.isManagerLoggedIn}" />  
+        </f:metadata>
+        <div id="wrapper">
+            <ui:include src="main_header.html"/>
+            <div class="container">
+                <h:outputLabel styleClass="logotxt5" style="font-weight: normal;text-align: center;" value="Manager Profile and Password Update" />
+                <p:panel rendered="#{userLogin.managerLogged}" style="float:right;padding-right: 30px;border:none;">
+                    <h:outputLabel style="font-weight: normal;text-align: center;" value="Welcome, #{userLogin.manager.firstName} #{userLogin.manager.lastName}!" />
+                </p:panel>
+                <h:form id ="managerProfileForm" >
+                    <p:panel style="border:none" rendered="#{managerProfileBean.verificationNeeded and !managerProfileBean.verificationinProgress}">
+                        <p:panel style="width:50%;border:none">
+                            <p:spacer height="20px" width="100%"/>
+                            <h:outputLabel style="font-size:12px;font-weight: normal;color: black"
+                                           value="The e-mail address that you provided has not yet been confirmed. Please verify this e-mail address by clicking Confirm E-mail. Verification will be sent to this address. Please open the e-mail and enter the verification code on the following page. NOTE: Verification e-mail may end up in your spam folder."/>
+                            <p:spacer height="30px" width="100%"/>
+                            <h:panelGrid columns="2" columnClasses="column1,column2">
+                                <h:outputLabel value="E-mail:" />  
+                                <h:outputText value="#{managerProfileBean.managerToUpdate.email}"   
+                                              title="Email" />  
+                                <p:commandButton style="font-size: 12px;background-color: orange;margin-right: 5px;border-radius: 5px" 
+                                                 value="Confirm E-mail" 
+                                                 update=":managerProfileForm" 
+                                                 actionListener="#{managerProfileBean.confirmEmail}" />
+                                <p:commandButton ajax="false" style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 5px" 
+                                                 update=":managerProfileForm" 
+                                                 value="Back" actionListener="#{managerProfileBean.cancelEmailVerification}"/> 
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:panel>
+                    <p:panel style="border:none" rendered="#{managerProfileBean.verificationinProgress}">
+                        <p:panel style="width:50%;border:none">
+                            <p:panelGrid  columns="2" >
+                                <h:outputLabel for="emailverification" value="Verification Code: *" />  
+                                <p:inputText value="#{managerProfileBean.authorizationCode}"   
+                                             id="emailverification" title="Provide 6 digit verification code" />  
+                                <h:outputLabel for="pwd" value="Password: *" />  
+                                <h:inputSecret value="#{managerProfileBean.password}" class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all"   
+                                               id="pwd" title="Type your password" />  
+                            </p:panelGrid>
+                            <p:panelGrid columns="2" columnClasses="column1,column2">
+                                <p:commandButton style="font-size: 12px;background-color: orange;margin-right: 5px;border-radius: 5px" 
+                                                 value="Submit" 
+                                                 update=":managerProfileForm" 
+                                                 action="#{managerProfileBean.verifyEmail}" /> 
+                                <p:commandButton style="font-size: 12px;background-color: orange;margin-right: 5px;border-radius: 5px" 
+                                                 value="Cancel" 
+                                                 update=":managerProfileForm" 
+                                                 actionListener="#{managerProfileBean.cancelEmailVerification()}" /> 
+                            </p:panelGrid>
+                        </p:panel>
+                        <p:commandLink id="sendemaillink" 
+                                       update="emailconfirmationpanel"
+                                       actionListener="#{managerProfileBean.resendEmail}">
+                            <h:outputText value="Resend Verification Code" />
+                        </p:commandLink>
+                        <p:panel id="emailconfirmationpanel" styleClass="generalPanelGridStyle">
+                            <p:messages id="resentemail" closable="true"/>
+                        </p:panel>
+                    </p:panel>
+                    <p:tabView id="tabView" styleClass="loginTabView" dynamic="true" 
+                               rendered="#{!managerProfileBean.verificationNeeded}"
+                               style="border:none;margin: 10px 0px 10px 0px;font-size: 12px;">
+                        <p:tab title="Profile" id="tabone">
+                            <p:panel style="width: 50%;border:none">
+                                <h:panelGrid columns="2" columnClasses="column1,column2">
+                                    <h:outputLabel value="First Name: *" />  
+                                    <p:inputText value="#{managerProfileBean.managerToUpdate.firstName}" maxlength="30"   
+                                                 title="First Name" />  
+                                    <h:outputLabel value="Last Name: *" />  
+                                    <p:inputText value="#{managerProfileBean.managerToUpdate.lastName}" maxlength="30"  
+                                                 title="Last Name" />  
+                                    <h:outputLabel value="Email: *" />  
+                                    <p:inputText value="#{managerProfileBean.managerToUpdate.email}" maxlength="50"  
+                                                 title="Email" />  
+                                    <h:outputLabel value="Phone: *" />  
+                                    <p:inputMask value="#{managerProfileBean.managerToUpdate.phoneCell}" mask="(999) 999-9999" label="Contact Phone"/>  
+                                    <h:outputLabel value="T-Shirt Size: " />  
+                                    <h:selectOneMenu styleClass="studentPanelSelectOneMenu" value="#{managerProfileBean.managerToUpdate.tshirtSizeCode}" label="#{managerProfileBean.managerToUpdate.tshirtSize}" >
+                                        <f:selectItems value="#{managerProfileBean.commonData.tShirtSizes}" var="tshirt" itemLabel="#{tshirt.codeAlpha}" itemValue="#{tshirt.code}" />
+                                    </h:selectOneMenu>
+                                    <h:outputLabel for="address1" value="Address: *" />  
+                                    <p:inputText value="#{managerProfileBean.managerToUpdate.address1}" maxlength="50"  
+                                                 id="address1" title="Address" />  
+                                    <h:outputLabel for="city" value="City: *" />  
+                                    <p:inputText value="#{managerProfileBean.managerToUpdate.city}" maxlength="50"  
+                                                 id="city" title="City" />  
+                                    <h:outputLabel for="state" value="State: *" />  
+                                    <h:selectOneMenu id="state" styleClass="studentPanelSelectOneMenu" style="width:55px" value="#{managerProfileBean.managerToUpdate.state}" label="#{managerProfileBean.managerToUpdate.state}" >
+                                        <f:selectItems value="#{registrationBean.commonData.states}" var="rstate" itemLabel="#{rstate.codeAlpha}" itemValue="#{rstate.codeAlpha}" />
+                                    </h:selectOneMenu>
+                                    <h:outputLabel for="zipcode" value="Zipcode: *" />  
+                                    <p:inputMask value="#{managerProfileBean.managerToUpdate.zipcode}" mask="99999" 
+                                                 id="zipcode" title="Zipcode" />  
+                                    <f:facet name="footer"> 
+                                        <p:panelGrid columns="2" columnClasses="column1,column2" styleClass="loginPanelStyle">
+                                            <p:commandButton style="font-size: 12px;background-color: orange;margin-right: 5px;border-radius: 5px" 
+                                                             value="Update" 
+                                                             update=":managerProfileForm" 
+                                                             actionListener="#{managerProfileBean.updateManagerProfile}" />
+                                            <p:commandButton ajax="false" style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 5px" 
+                                                             value="Back" action="MKRMgrHome"/> 
+                                        </p:panelGrid>
+                                    </f:facet>  
+                                </h:panelGrid>
+                                <p:messages closable="true"/>
+                            </p:panel>
+                        </p:tab>
+                        <p:tab title="Change Password" id="tabtwo">
+                            <p:panel style="width:50%;border:none">
+                                <h:panelGrid columns="2" columnClasses="column1,column2">
+                                    <h:outputLabel value="New Password : *" />
+                                    <p:password value="#{managerProfileBean.managerToUpdate.leaderLogonPassword}" title="Provide password" maxlength="50"/>
+                                    <h:outputLabel value="Confirm Password: *" />
+                                    <p:password value="#{managerProfileBean.managerToUpdate.leaderLogonPasswordConfirm}" title="Confirm password" maxlength="50"/>
+                                    <f:facet name="footer"> 
+                                        <p:panelGrid columns="2" columnClasses="column1,column2" styleClass="loginPanelStyle">
+                                            <p:commandButton style="font-size: 12px;background-color: orange;margin-right: 5px;border-radius: 5px" value="Update" 
+                                                             update=":managerProfileForm" 
+                                                             actionListener="#{managerProfileBean.updateManagerPassword}" />
+                                            <p:commandButton ajax="false" style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 5px" value="Back" action="MKRMgrHome"/> 
+                                        </p:panelGrid>
+                                    </f:facet>  
+                                </h:panelGrid>
+                                <p:messages closable="true"/>
+                            </p:panel>
+                        </p:tab>
+                    </p:tabView>
+                </h:form>
+
+                <div id="footer">Copyright © 2003 of Math Kangaroo in USA, NFP Inc. All Rights Reserved.</div>
+            </div>
+        </div>
+    </h:body>
+</html>
+
+

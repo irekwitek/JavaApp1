@@ -1,0 +1,317 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Math Kangaroo Manager Center Details</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="css/maincss.css" rel="stylesheet" type="text/css"/>        
+        <link rel="stylesheet" href="css/newcss.css" type="text/css"/>
+        <link rel="stylesheet" href="css/newcss1.css" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript">
+
+            window.onload = function()
+            {
+                var separator = " - ";
+                var dateTime = new Date();
+                var formattedDateTime = dateTime.toLocaleDateString();
+                var divObject = document.getElementById("dateTimeValue");
+                divObject.innerHTML = formattedDateTime;
+            };
+        </script>
+    </h:head>
+    <h:body>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{userLogin.isManagerLoggedIn}" />  
+        </f:metadata>
+        <div id="wrapper">
+            <ui:include src="main_header.html"/>
+            <div class="container">
+                <h:outputLabel styleClass="logotxt5" style="font-weight: normal;text-align: center;" value="Manager - Center Details" />
+                <p:panel rendered="#{userLogin.managerLogged}" style="float:right;padding-right: 30px;border:none;">
+                    <h:outputLabel style="font-weight: normal;text-align: center;" value="Welcome, #{userLogin.manager.firstName} #{userLogin.manager.lastName}!" />
+                </p:panel>
+                <h:form id ="mainform" >
+                    <p:panel style="border:none;margin-top: 50px;min-height: 400px;">
+                        <h:outputLabel value="CENTER CODE: " style=""/>
+                        <h:outputLabel value="#{centerDetailsBean.selectedCenter.locationCode}" style="color: deeppink;font-size: 12px; font-weight: bold;"/>
+                        <p:spacer width="25px"/>
+                        <h:outputLabel value="#{centerDetailsBean.managerCenterStatusText()}" style="color: darkgray;font-size: 12px; font-weight: bold;"/>
+                        <p:spacer width="100%" height="15px"/>
+                        <p:panel style="border:none;">
+                            <h:outputText style="font-size: 14px;" value="The centers name and address can be changed by the Math Kangaroo team only. Click on the 'Send Change Request' button if you want to modify any of the center data. The Center private sessions access code is generated automatically and should be distributed only to users selected by manager to registered to a private session." />
+                        </p:panel>
+                        <p:spacer width="100%" height="10px"/>
+                        <p:messages closable="true"/>
+                        <p:panelGrid columns="2" styleClass="topAlignmentClass">
+                            <h:panelGrid style="width: 60%;border:none" columns="2" columnClasses="column1,column2">
+                                <h:outputLabel value="Name: *" />  
+                                <p:inputText value="#{centerDetailsBean.selectedCenter.locationName}"
+                                             size="50"
+                                             disabled="true"
+                                             title="The name of the center can be changed by the MK team only." />  
+                                <h:outputLabel value="Address1: *" />  
+                                <p:inputText value="#{centerDetailsBean.selectedCenter.locationAddress1}" 
+                                             disabled="true"
+                                             title="Center address can be change by MK team only." />  
+                                <h:outputLabel value="Address2: *" />  
+                                <p:inputText value="#{centerDetailsBean.selectedCenter.locationAddress2}" 
+                                             disabled="true"
+                                             title="Center address can be change by MK team only." />  
+                                <h:outputLabel value="City: *" />  
+                                <p:inputText value="#{centerDetailsBean.selectedCenter.locationCity}" 
+                                             disabled="true"
+                                             title="Center address can be change by MK team only." />  
+                                <h:outputLabel value="State: *" />  
+                                <p:inputText value="#{centerDetailsBean.selectedCenter.locationState}" 
+                                             disabled="true"
+                                             title="Center address can be change by MK team only." />  
+                                <h:outputLabel value="Zip code: *" />  
+                                <p:inputText value="#{centerDetailsBean.selectedCenter.locationZipcode}" 
+                                             disabled="true"
+                                             title="Center address can be change by MK team only." />  
+                                <h:outputLabel value="Private Session Access Code: " />  
+                                <h:outputLabel value="#{centerDetailsBean.selectedCenter.locationRegistrationCode}" 
+                                               style="color: blue;font-weight: bold"
+                                               title="Access code is used to add center private sessions to the center selection on the registration page. You need to provide this code to the participants only if you have private session(s)." />  
+                                <h:outputLabel value="Confirmation Status:" />  
+                                <p:commandLink update=":confirmCenterForm" oncomplete="PF('dlgConfirmCenter').show()" style="color: red" disabled="#{centerDetailsBean.selectedCenter.locationConfirmationStatus == 'Y' || !center.managerPrimary }">
+                                    <h:outputLabel value="#{centerDetailsBean.confirmCenterText()}"/>
+                                </p:commandLink>
+                                <f:facet name="footer"> 
+                                    <p:panelGrid columns="2" columnClasses="column1,column2" styleClass="loginPanelStyle">
+                                        <p:commandButton style="font-size: 12px;background-color: orange;margin-right: 5px;border-radius: 5px" 
+                                                         value="Send Change Request"
+                                                         disabled="true"
+                                                         title="This functionality will be available soon. For now, please send an e-mail to info@mathkangaroo.org with the change request."
+                                                         actionListener="#{centerDetailsBean.sendChangeRequest()}" />
+                                        <p:commandButton ajax="false" style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 5px" 
+                                                         value="Back" action="MKRMgrCenters"/> 
+                                    </p:panelGrid>
+                                </f:facet> 
+                            </h:panelGrid>
+                            <p:panel styleClass="generalPanelStyle">
+                                <p:panelGrid columns="1" style="border: none;vertical-align: top">
+                                    <p:panel styleClass="generalPanelGridStyle">
+                                        <h:outputText style="font-size: 14px;font-weight: bold" value="Manager's Links"/>
+                                    </p:panel>
+                                    <p:commandLink ajax="false" action="MKRCenterSessions"  >
+                                        <h:outputText style="color: blue;font-size: 12px" 
+                                                      title="Click to go to center sessions"
+                                                      value="Center Sessions" />
+                                        <f:setPropertyActionListener value="MKRCenterDetails" target="#{userLogin.managerRedirectPage}" />  
+                                    </p:commandLink>
+                                    <p:commandLink disabled="#{!centerDetailsBean.selectedCenter.managerPrimary}" 
+                                                   oncomplete="dlgAddMgr.show()"
+                                                   update=":formAddMgr">
+                                        <h:outputText value="Request Supporting Manager" style="font-size: 12px;color:blue;" />
+                                        <f:setPropertyActionListener value="false" target="#{centerDetailsBean.findingUser}" />  
+                                    </p:commandLink>
+                                </p:panelGrid>
+                                <p:separator/>
+                                <p:panel styleClass="generalPanelGridStyle">
+                                    <h:outputText style="font-size: 14px;font-weight: bold" value="Center Managers"/>
+                                </p:panel>
+                                <p:dataTable id="managersTable" styleClass="registeredStudentsTableStyle" var="manager" value="#{centerDetailsBean.centerManagers}" 
+                                             emptyMessage="This user has no managers."> 
+                                    <p:column headerText="Mgr ID" sortBy="#{manager.leaderID}">  
+                                        <p:graphicImage rendered="#{manager.primaryManager}" value="images/primaryMgr.png" 
+                                                        title="Center Primary Manager"/>
+                                        <p:commandLink rendered="#{centerDetailsBean.selectedCenter.managerPrimary and !manager.primaryManager}" update=":deleteManagerForm" title="Remove this supporting manager" 
+                                                       oncomplete="dlgDeleteManager.show();">
+                                            <p:graphicImage value="images/unregister.png" />
+                                            <f:setPropertyActionListener value="#{manager}" target="#{centerDetailsBean.managerToDelete}" />  
+                                        </p:commandLink>
+                                        <p:spacer height="0px" width="3px"/>
+                                        <h:outputText value="#{manager.leaderID}" />  
+                                    </p:column>  
+                                    <p:column headerText="First" sortBy="#{manager.firstName}">  
+                                        <h:outputText value="#{manager.firstName}" />  
+                                    </p:column>  
+                                    <p:column headerText="Last" sortBy="#{manager.lastName}">  
+                                        <h:outputText value="#{manager.lastName}" />  
+                                    </p:column>  
+                                    <p:column headerText="Phone" >  
+                                        <h:outputText value="#{manager.phoneCell}" />  
+                                    </p:column>  
+                                </p:dataTable>
+
+                                <p:panel id="requestPanel" styleClass="generalPanelStyle">
+                                    <p:panel rendered="#{centerDetailsBean.managerRequests.size() > 0 }" styleClass="generalPanelGridStyle">
+                                        <h:outputText style="font-size: 14px;font-weight: normal" value="Requests for Supporting Manager"/>
+                                    </p:panel>
+                                    <p:dataTable rendered="#{centerDetailsBean.managerRequests.size() > 0 }" id="requestsTable" styleClass="currentStudentsTableStyle" var="rmanager" value="#{centerDetailsBean.managerRequests}" 
+                                                 emptyMessage="This center has no manager requests."> 
+                                        <p:column headerText="Action">
+                                            <p:menuButton value="Options" styleClass="actionButton">
+                                                <p:menuitem value="View request" style="font-size:12px"
+                                                            update=":requestViewForm"
+                                                            actionListener="#{centerDetailsBean.setManagerRequest(rmanager)}"
+                                                            oncomplete="dlgRequestView.show();" >
+                                                </p:menuitem>
+                                                <p:menuitem rendered="#{centerDetailsBean.selectedCenter.managerPrimary}" value="Cancel" style="font-size:12px"
+                                                            update=":cancelRequestForm"  
+                                                            actionListener="#{centerDetailsBean.setManagerRequest(rmanager)}"
+                                                            oncomplete="dlgCancelRequest.show();" >
+                                                </p:menuitem>
+                                            </p:menuButton>
+                                        </p:column>
+                                        <p:column headerText="User ID" sortBy="#{rmanager.user.userID}">  
+                                            <h:outputText value="#{rmanager.user.userID}" />  
+                                        </p:column>  
+                                        <p:column headerText="First" sortBy="#{rmanager.user.userFirstName}">  
+                                            <h:outputText value="#{rmanager.user.userFirstName}" />  
+                                        </p:column>  
+                                        <p:column headerText="Last" sortBy="#{rmanager.user.userLastName}">  
+                                            <h:outputText value="#{rmanager.user.userLastName}" />  
+                                        </p:column>  
+                                    </p:dataTable>
+                                </p:panel>
+                            </p:panel>
+                        </p:panelGrid>
+                    </p:panel>
+                </h:form>
+
+                <p:dialog id="dialogConfirm" widgetVar="dlgConfirmCenter" modal="true" header="CONFIRMATION:">
+                    <h:form id="confirmCenterForm">
+                        <p:panel styleClass="centeredItemsPanel" >
+                            <p:panelGrid columns="1" style="border: none;">
+                                <h:outputLabel value="Confirm #{centerDetailsBean.selectedCenter.locationName} center rediness?"/>
+                                <h:panelGroup>
+                                    <p:commandButton value="Yes" oncomplete="dlgConfirmCenter.hide()" 
+                                                     actionListener="#{centerDetailsBean.confirmCenter()}" styleClass="ui-priority-primary" update=":mainform" 
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px"/> 
+                                    <p:spacer width="10px"/>
+                                    <p:commandButton value="No" oncomplete="dlgConfirmCenter.hide()" 
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px"/>
+                                </h:panelGroup>
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dialogMessage" widgetVar="dlgMessage" modal="true" header="MESSAGE" width="450px" >
+                    <h:form id="dlgMessageForm">
+                        <p:panel styleClass="centeredItemsPanel" >
+                            <p:panelGrid columns="1" style="border: none;text-align: center">
+                                <h:outputLabel value="#{centerDetailsBean.dialogMessageText}"/>
+                                <p:commandButton value="OK" oncomplete="dlgMessage.hide()" 
+                                                 styleClass="ui-priority-primary" 
+                                                 style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" /> 
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dialogAddMgr" widgetVar="dlgAddMgr" modal="true" header="ADD SUPPORTING MANAGER:">
+                    <h:form id="formAddMgr">
+                        <p:panel rendered="#{!centerDetailsBean.findingUser}" styleClass="centeredItemsPanel" >
+                            <p:panel styleClass="generalPanelGridStyle">
+                                <h:outputText style="font-size: 10px;" value="Provide logon name for user you want to be your supporting manager."/>
+                            </p:panel>
+                            <p:messages closable="true" />
+                            <p:panelGrid columns="2" columnClasses="column1,column2" >
+                                <h:outputLabel value="Enter User Logon Name:"/>
+                                <p:inputText value="#{centerDetailsBean.supportManagerLogonName}" />
+                            </p:panelGrid>
+                            <p:commandButton value="Find User" update=":formAddMgr"
+                                             actionListener="#{centerDetailsBean.findUser()}"
+                                             style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" /> 
+                            <p:commandButton value="Cancel" oncomplete="dlgAddMgr.hide()" 
+                                             style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" />
+                        </p:panel>
+                        <p:panel rendered="#{centerDetailsBean.findingUser}"  >
+                            <p:panelGrid columns="2" columnClasses="column1,column2" >
+                                <h:outputLabel value="User ID:"/>
+                                <h:outputLabel value="#{centerDetailsBean.userToBeManager.userID}"/>
+                                <h:outputLabel value="First Name:"/>
+                                <h:outputLabel value="#{centerDetailsBean.userToBeManager.userFirstName}"/>
+                                <h:outputLabel value="Last Name:"/>
+                                <h:outputLabel value="#{centerDetailsBean.userToBeManager.userLastName}"/>
+                                <h:outputLabel value="E-mail:"/>
+                                <h:outputLabel value="#{centerDetailsBean.userToBeManager.userEmail}"/>
+                                <h:outputLabel value="Request Comment:"/>
+                                <p:inputTextarea rows="3" cols="20" value="#{centerDetailsBean.managerRequestComment}" style="width: 150px;height: 50px" />
+                            </p:panelGrid>
+                            <h:outputLabel style="font-size: 11px;" value="If you click 'Submit Request' button, a request to MK team will be sent to add this user to your supporting managers."/>
+                            <p:spacer width="100%" height="10px"/>
+                            <p:commandButton value="Submit Request" oncomplete="dlgAddMgr.hide()" update=":mainform:requestPanel :dlgMessageForm"
+                                             actionListener="#{centerDetailsBean.requestSupportingManager()}"
+                                             style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" /> 
+                            <p:commandButton value="Cancel" oncomplete="dlgAddMgr.hide()" 
+                                             style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" />
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dialogConfirmDelete" widgetVar="dlgDeleteManager" modal="true" header="CONFIRMATION:">
+                    <h:form id="deleteManagerForm">
+                        <p:panel id="deleteManagerPanel" styleClass="centeredItemsPanel" >
+                            <p:panelGrid columns="1" style="border: none;">
+                                <h:outputLabel value="Remove #{centerDetailsBean.managerToDelete.firstName} #{centerDetailsBean.managerToDelete.lastName} [ID:#{centerDetailsBean.managerToDelete.leaderID}] ?"/>
+                                <h:panelGroup>
+                                    <p:commandButton value="Yes" oncomplete="dlgDeleteManager.hide()" 
+                                                     actionListener="#{centerDetailsBean.deleteManager()}" styleClass="ui-priority-primary" update=":mainform:managersTable :dlgMessageForm" 
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px"/> 
+                                    <p:spacer width="10px"/>
+                                    <p:commandButton value="No" oncomplete="dlgDeleteManager.hide()" 
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px"/>
+                                </h:panelGroup>
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dialogRequestView" widgetVar="dlgRequestView" modal="true" header="REQUEST DETAILS:">
+                    <h:form id="requestViewForm">
+                        <p:panel styleClass="centeredItemsPanel" >
+                            <p:panelGrid columns="2" columnClasses="column1,column2">
+                                <h:outputLabel value="Requestor Manager:"/>
+                                <h:outputLabel value="#{centerDetailsBean.managerRequest.requestorManager.firstName} #{centerDetailsBean.managerRequest.requestorManager.lastName} [#{centerDetailsBean.managerRequest.requestorManager.leaderID}]"/>
+                                <h:outputLabel value="Date Requested:"/>
+                                <h:outputLabel value="#{centerDetailsBean.managerRequest.requestDate}"/>
+                                <h:outputLabel value="Requested For:"/>
+                                <h:outputLabel value="#{centerDetailsBean.managerRequest.user.userFirstName} #{centerDetailsBean.managerRequest.user.userLastName} [#{centerDetailsBean.managerRequest.user.userID}]"/>
+                                <h:outputLabel value="Request Comment:"/>
+                                <h:inputTextarea value="#{centerDetailsBean.managerRequest.comment}" disabled="true" rows="10" style="width: 250px;height: 100px"/>
+                                <h:panelGroup>
+                                    <p:commandButton value="Close" oncomplete="dlgRequestView.hide()"
+                                                     styleClass="ui-priority-primary"  
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px"/> 
+                                </h:panelGroup>
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dialogCancel" widgetVar="dlgCancelRequest" modal="true" header="CONFIRMATION:">
+                    <h:form id="cancelRequestForm">
+                        <p:panel styleClass="centeredItemsPanel" >
+                            <p:panelGrid columns="1" style="border: none;">
+                                <h:outputLabel value="Cancel request for #{centerDetailsBean.managerRequest.user.userFirstName} #{centerDetailsBean.managerRequest.user.userLastName} [ID:#{centerDetailsBean.managerRequest.user.userID}] as a supporting manager?"/>
+                                <h:panelGroup>
+                                    <p:commandButton value="Yes" oncomplete="dlgCancelRequest.hide()" 
+                                                     actionListener="#{centerDetailsBean.cancelRequest()}" styleClass="ui-priority-primary" update=":mainform:requestPanel :dlgMessageForm" 
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px"/> 
+                                    <p:spacer width="10px"/>
+                                    <p:commandButton value="No" oncomplete="dlgCancelRequest.hide()" 
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px"/>
+                                </h:panelGroup>
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <div id="footer">Copyright © 2003 of Math Kangaroo in USA, NFP Inc. All Rights Reserved.</div>
+            </div>
+        </div>
+    </h:body>
+</html>
+
+

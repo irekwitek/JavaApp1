@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Math Kangaroo Admin Students</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="css/maincss.css" rel="stylesheet" type="text/css"/>        
+        <link rel="stylesheet" href="css/newcss.css" type="text/css"/>
+        <link rel="stylesheet" href="css/newcss1.css" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript">
+
+            window.onload = function()
+            {
+                var separator = " - ";
+                var dateTime = new Date();
+                var formattedDateTime = dateTime.toLocaleDateString();
+                var divObject = document.getElementById("dateTimeValue");
+                divObject.innerHTML = formattedDateTime;
+            };
+        </script>
+    </h:head>
+    <h:body>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{userLogin.isAdminLoggedIn}" />  
+        </f:metadata>
+        <div id="wrapper">
+            <ui:include src="main_header.html"/>
+            <div class="container">
+                <h:form id ="mainform" >
+                    <h:outputLabel styleClass="logotxt5" style="font-weight: normal;text-align: center;" value="Admin - Student Search" />
+                    <p:panel rendered="#{userLogin.adminLogged}" style="float:right;padding-right: 30px;border:none;">
+                        <h:outputLabel style="font-weight: normal;text-align: center;" value="Welcome, #{userLogin.user.userFirstName} #{userLogin.user.userLastName}!" />
+                        <p:spacer width="25px"/>
+                        <p:commandLink actionListener="#{userLogin.logOff()}" update="mainform" >
+                            <h:outputText value="Log off" style="font-size: 14px;color:blue;" />
+                        </p:commandLink>
+                    </p:panel>
+                    <p:panel style="border:none;margin-top: 50px;min-height: 400px">
+                        <p:panel styleClass="adminSearchPanel" style="width: 40%" header="Provide criteria for student search">
+                            <p:panelGrid id="criteria" columns="2" columnClasses="column1,column2" styleClass="generalPanelStyle2" >
+                                <h:outputLabel value="Student Code: " style="font-weight: normal;font-size: 12px"/>  
+                                <p:inputText value="#{adminStudentsBean.studentIdSearch}"/> 
+                                <h:outputLabel value="Student First Name: " style="font-weight: normal;font-size: 12px"/>  
+                                <p:inputText value="#{adminStudentsBean.studentFirstSearch}" title="Enter as many characters as needed."/> 
+                                <h:outputLabel value="Student Last Name: " style="font-weight: normal;font-size: 12px"/>  
+                                <p:inputText value="#{adminStudentsBean.studentLastSearch}" title="Enter as many characters as needed."/> 
+                                <h:outputLabel value="User Logon Name: " style="font-weight: normal;font-size: 12px"/>  
+                                <p:inputText value="#{adminStudentsBean.userLogonNameSearch}" title="Enter as many characters as needed."/> 
+                                <h:outputLabel value="User E-mail: " style="font-weight: normal;font-size: 12px"/>  
+                                <p:inputText value="#{adminStudentsBean.emailSearch}" title="Enter as many characters as needed."/> 
+                                <h:outputLabel value="Center code: " style="font-weight: normal;font-size: 12px"/>  
+                                <p:inputText value="#{adminStudentsBean.centerSearch}" title="Enter as many characters as needed."/> 
+                            </p:panelGrid>
+                            <p:messages closable="true" />
+                            <p:commandButton ajax="true" style="font-size: 10px;background-color: #ccc;border-radius: 5px" 
+                                             value="Find" id="find"
+                                             action="#{adminStudentsBean.searchStudents}"
+                                             update=":mainform"/> 
+                            <p:spacer width="10px" />
+                            <p:commandButton ajax="true" style="font-size: 10px;background-color: #ccc;border-radius: 5px" 
+                                             value="Clear" 
+                                             action="#{adminStudentsBean.clearCriteria}"
+                                             update="criteria"/> 
+                        </p:panel>
+                        <p:spacer width="100%" height="20px" />
+                        <p:panel style="border: none">
+                            <p:panel styleClass="generalPanelGridStyle" >
+                                <h:outputLabel value="Student Search Results" style="font-weight: bold;font-size: 14px"/>  
+                            </p:panel>
+                            <p:dataTable styleClass="searchTableStyle" var="student" value="#{adminStudentsBean.adminStudents}" 
+                                         paginator="true" rows="14"
+                                         style="margin-top: 30px;margin-left: 50px;margin-right: 50px"
+                                         emptyMessage="No results found."> 
+                                <p:column headerText="Student ID" sortBy="#{student.studentIdentificationCode}" >  
+                                    <p:commandLink ajax="false" action="MKRAdminStudent" >
+                                        <h:outputText style="color: blue;font-weight: bold;font-size: 12px" 
+                                                      title="Display this student data."
+                                                      value="#{student.studentIdentificationCode}" />
+                                        <f:setPropertyActionListener value="#{student}" target="#{adminBean.selectedStudent}" />  
+                                    </p:commandLink>
+                                </p:column>  
+                                <p:column headerText="First" sortBy="#{student.firstName}">  
+                                    <h:outputText value="#{student.firstName}" />  
+                                </p:column>  
+                                <p:column headerText="Last" sortBy="#{student.lastName}">  
+                                    <h:outputText value="#{student.lastName}" />  
+                                </p:column>  
+                                <p:column headerText="Status" sortBy="#{student.status}">  
+                                    <h:outputText value="#{userLogin.commonData.getRegistrationStatusCodeName(student.status)}" />  
+                                </p:column>  
+                            </p:dataTable>
+                            <p:panel styleClass="generalPanelGridStyle">
+                                <h:outputText style="font-size: 12px;" value="To display and update student data click on the Student ID link."/>
+                            </p:panel>
+                        </p:panel>
+                        <p:commandButton ajax="false" style="font-size: 14px;background-color: orange;margin-left: 5px;margin-top: 15px;border-radius: 5px" 
+                                         value="Back" 
+                                         action="MKRAdminHome" /> 
+                    </p:panel>
+                    <p:blockUI block=":mainform" trigger="find" />
+                </h:form>
+
+                <div id="footer">Copyright © 2003 of Math Kangaroo in USA, NFP Inc. All Rights Reserved.</div>
+            </div>
+        </div>
+    </h:body>
+</html>
+
+

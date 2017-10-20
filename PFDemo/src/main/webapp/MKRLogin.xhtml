@@ -1,0 +1,158 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Math Kangaroo User Log-in</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="css/maincss.css" rel="stylesheet" type="text/css"/>        
+        <link rel="stylesheet" href="css/newcss.css" type="text/css"/>
+        <link rel="stylesheet" href="css/newcss1.css" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript">
+
+            window.onload = function()
+            {
+                var separator = " - ";
+                var dateTime = new Date();
+                var formattedDateTime = dateTime.toLocaleDateString();
+                var divObject = document.getElementById("dateTimeValue");
+                divObject.innerHTML = formattedDateTime;
+            };
+        </script>
+    </h:head>
+    <h:body>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{userLogin.checkUserLogIn}" />  
+        </f:metadata>
+        <div id="wrapper">
+            <ui:include src="main_header.html"/>
+            <div class="container">
+                <h:form id ="userLoginForm" >
+                    <p:panelGrid columns="1" style="border:none;">
+                        <h:outputLabel styleClass="logotxt5" style="font-weight: normal;text-align: center;" value="User Log-in" />
+                        <h:outputLabel style="font-size:13px;font-weight: lighter" 
+                                       value="Starting in 2017, registration for the Math Kangaroo competition in USA will require users to provide a valid e-mail address. This ensures proper communication between the MK team and students or parent(s) and/or guardian(s). Creating a parent/guardian account is fast and requires minimal information from the user. You will be able to register your student(s) when you successfully log in and your e-mail address is confirmed."/>
+                    </p:panelGrid>
+                    <p:panel style="border:none" rendered="#{userLogin.userEmailConfirmation}">
+                        <p:panel style="width:50%;border:none">
+                            <p:panelGrid  columns="2" >
+                                <h:outputLabel for="emailverification" value="Verification Code: *" />  
+                                <p:inputText value="#{userLogin.authorizationCode}"   
+                                             id="emailverification" title="Provide 6 digit verification code" />  
+                                <h:outputLabel for="pwd" value="Password: *" />  
+                                <h:inputSecret value="#{userLogin.password}" class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all"   
+                                               id="pwd" title="Type your password" />  
+                            </p:panelGrid>
+                            <p:panelGrid columns="2" columnClasses="column1,column2">
+                                <p:commandButton style="font-size: 12px;background-color: orange;margin-right: 5px;border-radius: 5px" 
+                                                 id="verifyButton" 
+                                                 value="Submit" 
+                                                 update=":userLoginForm" 
+                                                 actionListener="#{userLogin.verifyEmail()}" /> 
+                                <p:commandButton style="font-size: 12px;background-color: orange;margin-right: 5px;border-radius: 5px" id="bCancel2" value="Cancel" update=":userLoginForm" 
+                                                 actionListener="#{userLogin.cancelConfirm}" /> 
+                            </p:panelGrid>
+                        </p:panel>
+                        <p:commandLink id="sendemaillink" update="emailconfirmationpanel" actionListener="#{userLogin.resendEmail()}">
+                            <h:outputText value="Resend Verification Code" />
+                        </p:commandLink>
+                        <p:panel id="emailconfirmationpanel" styleClass="generalPanelGridStyle">
+                            <p:messages closable="true"/>
+                        </p:panel>
+                    </p:panel>
+                    <p:tabView id="tabView" styleClass="loginTabView" rendered="#{!userLogin.userEmailConfirmation}" 
+                               dynamic="true" style="border:none;margin: 10px 0px 10px 0px;font-size: 12px;">
+                        <p:tab title="Existing User" id="tab1">
+                            <p:panel style="width: 50%;border:none">
+                                <h:panelGrid columns="2" columnClasses="column1,column2"> 
+                                    <h:outputLabel for="username" value="Username:"/>
+                                    <p:inputText value="#{userLogin.user.logonName}"   
+                                                 id="username" label="username" disabled="#{userLogin.existingUserEmailConfirmation}"/>  
+                                    <h:outputLabel for="password" value="Password:" />  
+                                    <h:inputSecret value="#{userLogin.user.logonPassword}" class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all"  
+                                                   id="password" label="password" disabled="#{userLogin.existingUserEmailConfirmation}"/>
+                                    <h:outputLabel for="email" value="E-mail: *" rendered ="#{userLogin.existingUserEmailConfirmation}" />  
+                                    <p:inputText value="#{userLogin.user.userEmail}"   
+                                                 id="email" title="E-mail" rendered ="#{userLogin.existingUserEmailConfirmation}" />  
+                                    <f:facet name="footer">  
+                                        <p:commandButton ajax="true" style="font-size: 12px;background-color: orange;margin-left:130px;margin-right: 5px;border-radius: 5px" 
+                                                         id="loginButton" value="Log in" 
+                                                         update=":userLoginForm" 
+                                                         rendered ="#{!userLogin.existingUserEmailConfirmation}"
+                                                         action="#{userLogin.login}"/> 
+                                        <p:commandButton ajax="true" style="font-size: 12px;background-color: orange;margin-left:130px;margin-right: 10px;border-radius: 5px" 
+                                                         id="bConfirm" value="Confirm email" update=":userLoginForm" rendered ="#{userLogin.existingUserEmailConfirmation}"
+                                                         actionListener="#{userLogin.loginConfirm()}" /> 
+                                        <p:commandButton ajax="true" style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 5px" 
+                                                         id="bCancel" value="Cancel" update=":userLoginForm" rendered ="#{userLogin.existingUserEmailConfirmation}"
+                                                         actionListener="#{userLogin.cancelConfirm()}" /> 
+                                    </f:facet>
+                                </h:panelGrid>  
+                                <h:commandLink action="#{userLogin.resetUserPassword()}" rendered ="#{!userLogin.existingUserEmailConfirmation}">
+                                    <h:outputText value="Forgot user name / password?" />
+                                </h:commandLink>
+                            </p:panel>
+                            <h:outputLabel rendered ="#{userLogin.existingUserEmailConfirmation}" 
+                                           style="font-size:12px;font-weight: normal;color: red"
+                                           value="The e-mail address that you provided has not yet been confirmed. Please verify this e-mail address by clicking Confirm E-mail. Verification will be sent to this address. Please open the e-mail and enter the verification code on the following page. NOTE: Verification e-mail may end up in your spam folder."/>
+                            <p:messages id="validateUserMessage" closable="true"/>
+                        </p:tab>
+                        <p:tab title="New User" id="tab2" disabled="#{userLogin.existingUserEmailConfirmation}">
+                            <p:panel style="width:50%;border:none">
+                                <h:panelGrid columns="2" columnClasses="column1,column2">  
+                                    <h:outputLabel for="firstName2" value="First Name: *" />  
+                                    <p:inputText value="#{userLogin.user.userFirstName}"  maxlength="30" 
+                                                 id="firstName2" title="First Name" />  
+                                    <h:outputLabel for="lastName2" value="Last Name: *" />  
+                                    <p:inputText value="#{userLogin.user.userLastName}" maxlength="30"  
+                                                 id="lastName2" title="Last Name" />  
+                                    <h:outputLabel for="email2" value="E-mail: *" />  
+                                    <p:inputText value="#{userLogin.user.userEmail}" maxlength="50"  
+                                                 id="email2" title="E-mail" />  
+                                    <h:outputLabel for="contactId2" value="Phone Number:" />  
+                                    <p:inputMask id="contactId2" value="#{registrationBean.user.userPhone}" mask="(999) 999-9999" label="Phone Number"/>  
+                                    <h:outputLabel for="username2" value="Username: *" />  
+                                    <p:inputText value="#{userLogin.user.logonName}"  maxlength="30" 
+                                                 id="username2" title="Create your username"/> 
+
+                                    <h:outputLabel for="pwd1" value="Password : *" />
+                                    <p:password id="pwd1" value="#{userLogin.user.logonPassword}" title="Provide password" maxlength="50"/>
+
+                                    <h:outputLabel for="pwd2" value="Confirm Password: *" />
+                                    <p:password id="pwd2" value="#{userLogin.user.logonPasswordConfirm}" title="Confirm password" maxlength="50"/>
+
+                                    <h:outputLabel for="question2" value="Secure Question: *" />  
+                                    <p:inputText value="#{userLogin.user.authQuestion}" maxlength="50"  
+                                                 id="question2" title="Create your secure question" />  
+                                    <h:outputLabel for="answer2" value="Secure Answer: *" />  
+                                    <p:inputText value="#{userLogin.user.authAnswer}"  maxlength="50" 
+                                                 id="answer2" title="Provide your secure answer" />  
+                                    <h:outputLabel for="code2" value="4-digit Code:" />  
+                                    <p:inputMask value="#{userLogin.user.authCodeTxt}" mask="9999"  
+                                                 id="code2" title="Provide 4-digit code" />  
+                                    <f:facet name="footer"> 
+                                        <p:panelGrid columns="1" id="btnCreatePanel" styleClass="loginPanelStyle">
+                                            <p:commandButton ajax="true" style="font-size: 12px;background-color: orange;margin-right: 5px;border-radius: 5px" 
+                                                             id="loginButton2" value="Create" update=":userLoginForm" 
+                                                             actionListener="#{userLogin.validateUser()}" />
+                                        </p:panelGrid>
+                                    </f:facet>  
+                                </h:panelGrid>  
+                            </p:panel>
+                            <p:messages id="validateUserMessage2" closable="true"/>
+                        </p:tab>
+                    </p:tabView>
+                </h:form>      
+            </div>
+            <div id="footer">Copyright © 2003 of Math Kangaroo in USA, NFP Inc. All Rights Reserved.</div>
+        </div>
+    </h:body>
+</html>
+
+

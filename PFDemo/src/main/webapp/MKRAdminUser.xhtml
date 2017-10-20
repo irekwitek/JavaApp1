@@ -1,0 +1,320 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Math Kangaroo Admin User Details</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="css/maincss.css" rel="stylesheet" type="text/css"/>        
+        <link rel="stylesheet" href="css/newcss.css" type="text/css"/>
+        <link rel="stylesheet" href="css/newcss1.css" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript">
+
+            window.onload = function()
+            {
+                var separator = " - ";
+                var dateTime = new Date();
+                var formattedDateTime = dateTime.toLocaleDateString();
+                var divObject = document.getElementById("dateTimeValue");
+                divObject.innerHTML = formattedDateTime;
+            };
+        </script>
+    </h:head>
+    <h:body>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{userLogin.isAdminLoggedIn}" />  
+        </f:metadata>
+        <div id="wrapper">
+            <ui:include src="main_header.html"/>
+            <div class="container">
+                <h:outputLabel styleClass="logotxt5" style="font-weight: normal;text-align: center;" value="Admin - User Information" />
+                <p:panel rendered="#{userLogin.adminLogged}" style="float:right;padding-right: 30px;border:none;">
+                    <h:outputLabel style="font-weight: normal;text-align: center;" value="Welcome, #{userLogin.user.userFirstName} #{userLogin.user.userLastName}!" />
+                </p:panel>
+                <h:form id ="mainform" >
+                    <p:panel style="border:none;margin-top: 50px;min-height: 400px;">
+                        <h:outputLabel value="USER ID: " style=""/>
+                        <h:outputLabel value="#{adminBean.selectedUser.userID}" style="color: deeppink;font-size: 14px; font-weight: bold;"/>
+                        <p:spacer width="30px" />
+                        <h:outputLabel value="ROLE: " style=""/>
+                        <h:outputLabel value="#{adminBean.selectedUser.listUserRoles()}" style="color: deeppink;font-size: 14px; font-weight: bold;"/>
+                        <p:spacer width="100%" height="10px" /> 
+                        <p:panelGrid styleClass="topAlignmentClass">
+                            <p:row>
+                                <p:column>
+                                    <p:panel styleClass="generalPanelStyle">
+                                        <p:tabView id="tabView" styleClass="adminUserTabView"  
+                                                   dynamic="true" style="margin: 10px 0px 10px 0px;font-size: 12px;border-style: dotted">
+                                            <p:tab title="User Account" id="tab1">
+                                                <h:panelGrid columns="2" columnClasses="column1,column2">
+                                                    <h:outputLabel styleClass="gridInputMany" value="First:" />  
+                                                    <h:outputLabel value="#{adminBean.selectedUser.userFirstName}"
+                                                                 styleClass="gridInputManyBold"/>  
+                                                    <h:outputLabel styleClass="gridInputMany" value="Last:" />  
+                                                    <h:outputLabel value="#{adminBean.selectedUser.userLastName}"
+                                                                 styleClass="gridInputManyBold"/>  
+                                                    <h:outputLabel styleClass="gridInputMany" value="Logon:" />  
+                                                    <h:outputLabel value="#{adminBean.selectedUser.logonName}"
+                                                                 styleClass="gridInputManyBold"/>  
+                                                    <h:outputLabel styleClass="gridInputMany" value="Password:" />  
+                                                    <h:outputLabel value="#{adminBean.selectedUser.logonPassword}"
+                                                                 styleClass="gridInputManyBold"/>  
+                                                    <h:outputLabel styleClass="gridInputMany" value="E-mail:" />  
+                                                    <h:outputLabel value="#{adminBean.selectedUser.userEmail}"
+                                                                 styleClass="gridInputManyBold"/>  
+                                                    <h:outputLabel styleClass="gridInputMany" value="Address:" />  
+                                                    <h:outputLabel value="#{adminBean.selectedUser.userAddress1}"
+                                                                 styleClass="gridInputManyBold"/>  
+                                                    <h:outputLabel styleClass="gridInputMany" value="City: " />  
+                                                    <h:outputLabel value="#{adminBean.selectedUser.userCity}"
+                                                                 styleClass="gridInputManyBold"/>  
+                                                    <h:outputLabel styleClass="gridInputMany" value="State:" />  
+                                                    <h:outputLabel value="#{adminBean.selectedUser.userState}"
+                                                                 styleClass="gridInputManyBold"/>  
+                                                    <h:outputLabel styleClass="gridInputMany" value="Zipcode:" />  
+                                                    <h:outputLabel value="#{adminBean.selectedUser.userZipcode}"
+                                                                 styleClass="gridInputManyBold"/>  
+                                                    <h:outputLabel styleClass="gridInputMany" value="Auth_Question:" />  
+                                                    <h:outputLabel value="#{adminBean.selectedUser.authQuestion}"
+                                                                 styleClass="gridInputManyBold"/>  
+                                                    <h:outputLabel styleClass="gridInputMany" value="Auth_Answer:" />  
+                                                    <h:outputLabel value="#{adminBean.selectedUser.authAnswer}"
+                                                                 styleClass="gridInputManyBold"/>  
+                                                    <h:outputLabel styleClass="gridInputMany" value="Auth_Code:" />  
+                                                    <h:outputLabel value="#{adminBean.selectedUser.authCodeTxt}"
+                                                                 styleClass="gridInputManyBold"/>  
+                                                    <h:outputLabel styleClass="gridInputMany" value="Phone:" />  
+                                                    <h:outputLabel value="#{adminBean.selectedUser.userPhoneCell}"
+                                                                 styleClass="gridInputManyBold"/>  
+                                                </h:panelGrid>
+                                            </p:tab>
+                                            <p:tab title="Manager Account" id="tab2" disabled="#{adminBean.selectedUser.roleCode != 2}">
+                                                <h:panelGrid columns="2" columnClasses="column1,column2">
+                                                    <h:outputLabel value="Mgr_First:" styleClass="gridInputMany" />  
+                                                    <p:inputText value="#{adminBean.selectedUserManager.firstName}" maxlength="30"
+                                                                 styleClass="gridInputMany"
+                                                                 size="40" />  
+                                                    <h:outputLabel value="Mgr_Last:" styleClass="gridInputMany" />  
+                                                    <p:inputText value="#{adminBean.selectedUserManager.lastName}" maxlength="30"
+                                                                 styleClass="gridInputMany"
+                                                                 size="40" />  
+                                                    <h:outputLabel value="Mgr_Logon:" styleClass="gridInputMany" />  
+                                                    <p:inputText value="#{adminBean.selectedUserManager.leaderLogonName}" maxlength="30"
+                                                                 styleClass="gridInputMany"
+                                                                 size="40" />  
+                                                    <h:outputLabel value="Mgr_Password:" styleClass="gridInputMany" />  
+                                                    <p:inputText value="#{adminBean.selectedUserManager.leaderLogonPassword}" maxlength="30"
+                                                                 styleClass="gridInputMany"
+                                                                 size="40" />  
+                                                    <h:outputLabel value="Mgr_E-mail:" styleClass="gridInputMany" />  
+                                                    <p:inputText value="#{adminBean.selectedUserManager.email}" maxlength="75"
+                                                                 styleClass="gridInputMany"
+                                                                 size="40" />  
+                                                    <h:outputLabel value="Mgr_Address:" styleClass="gridInputMany" />  
+                                                    <p:inputText value="#{adminBean.selectedUserManager.address1}" maxlength="50"
+                                                                 styleClass="gridInputMany"
+                                                                 size="40" />  
+                                                    <h:outputLabel value="Mgr_City: " styleClass="gridInputMany" />  
+                                                    <p:inputText value="#{adminBean.selectedUserManager.city}" maxlength="50"
+                                                                 styleClass="gridInputMany"
+                                                                 size="40" />  
+                                                    <h:outputLabel value="Mgr_State:" styleClass="gridInputMany" />  
+                                                    <p:inputText value="#{adminBean.selectedUserManager.state}" maxlength="2"
+                                                                 styleClass="gridInputMany"
+                                                                 size="10"
+                                                                 />  
+                                                    <h:outputLabel value="Mgr_Zipcode:" styleClass="gridInputMany" />  
+                                                    <p:inputText value="#{adminBean.selectedUserManager.zipcode}" maxlength="11"
+                                                                 size="10"
+                                                                 />  
+                                                    <h:outputLabel value="Mgr_Phone:" styleClass="gridInputMany" />  
+                                                    <p:inputText value="#{adminBean.selectedUserManager.phoneCell}" maxlength="15"
+                                                                 styleClass="gridInputMany"
+                                                                 size="20"
+                                                                 />  
+                                                    <f:facet name="footer"> 
+                                                        <p:panel styleClass="generalPanelStyle">
+                                                            <p:commandButton style="font-size: 10px;background-color: #3ddcf8;margin-right: 5px;border-radius: 5px" 
+                                                                             actionListener="#{adminBean.updateManagerData()}"
+                                                                             update=":mainform"
+                                                                             value="Update"
+                                                                             />
+                                                            <p:commandButton style="font-size: 10px;background-color: #3ddcf8;margin-right: 5px;border-radius: 5px" 
+                                                                             actionListener="#{adminBean.restoreManagerData()}"
+                                                                             update=":mainform"
+                                                                             value="Restore to last update"
+                                                                             />
+                                                        </p:panel>
+                                                    </f:facet>  
+                                                </h:panelGrid>
+                                                <p:messages closable="true"/>
+                                            </p:tab>
+                                        </p:tabView>
+                                        <p:commandButton ajax="false" style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 5px" 
+                                                         value="Back" action="MKRAdminUsers"/> 
+                                    </p:panel>
+                                </p:column>
+                                <p:column>
+                                    <p:panel styleClass="generalPanelStyle">
+                                        <p:panel styleClass="generalPanelGridStyle">
+                                            <h:outputText style="font-size: 14px;font-weight: bold" value="Admin Links"/>
+                                        </p:panel>
+                                        <p:panelGrid columns="1" style="border: none;vertical-align: top" >
+                                            <p:commandLink disabled="true">
+                                                <h:outputText value="Create Manager Account for this User" style="font-size: 11px;color:blue;" />
+                                            </p:commandLink>
+                                            <p:commandLink onclick="dlgCreateCode.show()" >
+                                                <h:outputText value="Create discount code for this User" style="font-size: 11px;color:blue;" />
+                                            </p:commandLink>
+                                        </p:panelGrid>
+                                        <p:panel styleClass="generalPanelGridStyle">
+                                            <h:outputText style="font-size: 14px;font-weight: bold" value="User's Discount Codes"/>
+                                        </p:panel>
+                                        <p:panelGrid columns="1" style="border: none;vertical-align: top">
+                                            <p:panel id="discountPanel" styleClass="generalPanelStyle">
+                                                <p:outputLabel value="Open: "/>
+                                                <h:outputText value="#{adminBean.getUserCodes(0)}"/>
+                                                <p:spacer width="5px"/>
+                                                <p:outputLabel value="Used: "/>
+                                                <h:outputText value="#{adminBean.getUserCodes(1)}"/>
+                                                <p:spacer width="10px"/>
+                                                <p:commandLink onclick="dlgShowCodes.show()" >
+                                                    <h:outputText value="Show" style="font-size: 11px;color:blue;" />
+                                                </p:commandLink>
+                                            </p:panel>
+                                        </p:panelGrid>
+                                        <p:panel styleClass="generalPanelGridStyle">
+                                            <h:outputText rendered="#{adminBean.selectedUser.hasThisRole(2)}" style="font-size: 14px;font-weight: bold" value="Manager's Centers"/>
+                                        </p:panel>
+                                        <p:dataTable rendered="#{adminBean.selectedUser.hasThisRole(2)}" styleClass="registeredStudentsTableStyle" var="center" value="#{adminBean.managerCenters}" 
+                                                     emptyMessage="This manager has no centers assigned."> 
+                                            <p:column headerText="Code" >  
+                                                <p:commandLink ajax="false" action="MKRAdminCenter">
+                                                    <h:outputText style="color: blue;font-weight: bold;font-size: 11px" 
+                                                                  title="Go to this center"
+                                                                  value="#{center.locationCode}" />
+                                                    <f:setPropertyActionListener value="#{center}" target="#{userLogin.selectedCenter}" />  
+                                                </p:commandLink>
+                                            </p:column>  
+                                            <p:column headerText="Center" >  
+                                                <h:outputText value="#{center.locationNameAndAddress}" style="font-size: 11px"/>  
+                                            </p:column>  
+                                            <p:column headerText="Active/Confirmed">  
+                                                <h:outputText value="#{center.active} / #{center.locationConfirmationStatus}" style="font-size: 11px" />  
+                                            </p:column>  
+                                        </p:dataTable>
+                                        <p:panel styleClass="generalPanelGridStyle">
+                                            <h:outputText style="font-size: 14px;font-weight: bold" value="User's Students"/>
+                                        </p:panel>
+                                        <p:dataTable styleClass="registeredStudentsTableStyle" var="student" value="#{adminBean.selectedUser.userStudents}" 
+                                                     paginator="true" rows="10"
+                                                     emptyMessage="This user has no students."> 
+                                            <p:column headerText="Student ID" sortBy="#{student.studentIdentificationCode}">  
+                                                <p:commandLink rendered="#{student.status == 2}" update=":dlgMessageForm" title="Resend a registration email for this student" 
+                                                               actionListener="#{adminBean.resendRegistrationEmail(student)}" >
+                                                    <p:graphicImage value="images/send-email.png" />
+                                                </p:commandLink>
+                                                <p:spacer width="5px"/>
+                                                <p:commandLink ajax="false" title="Manage this student data" 
+                                                               action="MKRAdminStudent" >
+                                                    <h:outputText value="#{student.studentIdentificationCode}" style="font-size: 11px"/>  
+                                                    <f:setPropertyActionListener value="#{student}" target="#{adminBean.selectedStudent}" />  
+                                                </p:commandLink>
+                                            </p:column>  
+                                            <p:column headerText="First" sortBy="#{student.firstName}">  
+                                                <h:outputText value="#{student.firstName}" style="font-size: 11px"/>  
+                                            </p:column>  
+                                            <p:column headerText="Last" sortBy="#{student.lastName}">  
+                                                <h:outputText value="#{student.lastName}" style="font-size: 11px"/>  
+                                            </p:column>  
+                                            <p:column headerText="Status" sortBy="#{student.status}">  
+                                                <h:outputText value="#{adminBean.userLogin.commonData.getRegistrationStatusCodeName(student.status)}" style="font-size: 11px"/>  
+                                            </p:column>  
+                                        </p:dataTable>
+                                    </p:panel>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                </h:form>
+
+                <p:dialog id="dialogCreateCode" widgetVar="dlgCreateCode" modal="true" header="CREATE DISCOUNT CODE:">
+                    <h:form id="formCreateCode">
+                        <p:panel styleClass="centeredItemsPanel" >
+                            <p:panelGrid columns="2" styleClass="column1,column2" >
+                                <h:outputLabel value="Discount Type:"/>
+                                <h:selectOneMenu styleClass="studentPanelSelectOneMenu" style="width:100px" value="#{adminBean.discountCode.type}" label="#{adminBean.discountCode.typeName}" >
+                                    <f:selectItems value="#{userLogin.commonData.discountCodes}" var="code" itemLabel="#{code.codeAlpha}" itemValue="#{code.code}" />
+                                </h:selectOneMenu>
+                                <h:outputLabel value="Expires:"/>
+                                <p:calendar value="#{adminBean.discountCode.validUntil}" size="8" title="Default is January 31" />
+                                <h:outputLabel value="Number of codes:"/>
+                                <p:spinner value="#{adminBean.discountCode.numberOfCodes}" min="1" max="5" size="3" style="text-align: center;" />
+                                <h:outputLabel value="Purpose Type:"/>
+                                <h:selectOneMenu styleClass="studentPanelSelectOneMenu" style="width:150px" value="#{adminBean.discountCode.purposeType}" label="#{adminBean.discountCode.purposeTypeName}" >
+                                    <f:selectItems value="#{adminBean.getDiscountPurposeCodes()}" var="code" itemLabel="#{code.codeAlpha}" itemValue="#{code.code}" />
+                                </h:selectOneMenu>
+                                <h:outputLabel value="Comment:"/>
+                                <p:inputTextarea rows="3" cols="20" value="#{adminBean.discountCode.comment}" style="width: 150px;height: 50px" />
+                            </p:panelGrid>
+                            <p:commandButton value="Create" oncomplete="dlgCreateCode.hide()" update=":dlgMessageForm :mainform:discountPanel :formShowCodes"
+                                             action="#{adminBean.createDiscountCode()}" styleClass="ui-priority-primary" 
+                                             style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" /> 
+                            <p:commandButton value="Cancel" oncomplete="dlgCreateCode.hide()" 
+                                             style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" />
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dialogShowCodes" widgetVar="dlgShowCodes" modal="true" header="User's Discount Codes:">
+                    <h:form id="formShowCodes">
+                        <p:dataTable styleClass="pastStudentsTableStyle" var="dCode" value="#{adminBean.selectedUser.userDiscountCodes}" 
+                                     emptyMessage="User has no discount codes."> 
+                            <p:column headerText="Type" sortBy="#{dCode.type}">  
+                                <h:outputText value="#{dCode.typeName}" />  
+                            </p:column>  
+                            <p:column headerText="Status" sortBy="#{dCode.status}">  
+                                <h:outputText value="#{dCode.status}" />  
+                            </p:column>  
+                            <p:column headerText="Issued Date" sortBy="#{dCode.issuedDate}">  
+                                <h:outputText value="#{dCode.issuedDate}" />  
+                            </p:column>  
+                            <p:column headerText="Issued By" sortBy="#{dCode.issuedByName}">  
+                                <h:outputText value="#{dCode.issuedByName}" />  
+                            </p:column>  
+                            <p:column headerText="Used Date" sortBy="#{dCode.usedOnDate}">  
+                                <h:outputText value="#{dCode.usedOnDate}" />  
+                            </p:column>  
+                        </p:dataTable>
+                        <p:commandButton value="Close" oncomplete="dlgShowCodes.hide()" 
+                                         styleClass="ui-priority-primary" 
+                                         style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" /> 
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dialogMessage" widgetVar="dlgMessage" modal="true" header="MESSAGE" width="450px" >
+                    <h:form id="dlgMessageForm">
+                        <p:panel styleClass="centeredItemsPanel" >
+                            <p:panelGrid columns="1" style="border: none;text-align: center">
+                                <h:outputLabel value="#{adminBean.dialogMessageText}"/>
+                                <p:commandButton value="OK" oncomplete="dlgMessage.hide()" 
+                                                 styleClass="ui-priority-primary" 
+                                                 style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" /> 
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <div id="footer">Copyright © 2003 of Math Kangaroo in USA, NFP Inc. All Rights Reserved.</div>
+            </div>
+        </div>
+    </h:body>
+</html>
+
+

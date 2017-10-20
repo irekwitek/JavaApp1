@@ -1,0 +1,292 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>New MK Center Registration</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="css/maincss.css" rel="stylesheet" type="text/css"/>        
+        <link rel="stylesheet" href="css/newcss.css" type="text/css"/>
+        <link rel="stylesheet" href="css/newcss1.css" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript">
+
+            window.onload = function()
+            {
+                var separator = " - ";
+                var dateTime = new Date();
+                var formattedDateTime = dateTime.toLocaleDateString();
+                var divObject = document.getElementById("dateTimeValue");
+                divObject.innerHTML = formattedDateTime;
+            };
+        </script>
+    </h:head>
+    <h:body>
+        <div id="wrapper">
+            <ui:include src="main_header.html"/>
+            <div class="container">
+                <h:form id ="newCenterForm" >
+                    <p:panelGrid columns="1" style="border:none">
+                        <h:outputLabel styleClass="logotxt5" style="font-weight: normal;text-align: center;" value="New Math Kangaroo Center Registration" />
+                        <p:panel rendered="#{userLogin.userLogged}" style="float:right;padding-right: 30px;border:none;">
+                            <h:outputLabel style="font-weight: normal;text-align: center;" value="Welcome, #{userLogin.user.userFirstName} #{userLogin.user.userLastName}!" />
+                        </p:panel>
+                    </p:panelGrid>
+                    <p:panel style="border:none;min-height: 450px" >
+                        <p:panelGrid columns="1" columnClasses="column12" styleClass="generalPanelStyle" rendered="#{!userLogin.userLogged}" style="margin-top: 100px">
+                            <h:outputLabel style="font-size:13px;font-weight: lighter" 
+                                           value="In order to request a new Math Kangaroo Center permit you must have a verified Math Kangaroo user account and log in. If you don't have a Math Kangaroo account, you will be prompt to create one in the next step. With your account you will be able to provide the new center information and submit your request."/>
+                            <p:commandButton style="font-size: 12px;background-color: orange;border-radius: 5px;margin-top: 100px" 
+                                             value="Continue" 
+                                             action="MKRLogin">
+                                <f:setPropertyActionListener target="#{userLogin.redirectPage}" value="MKRNewCenterRegistration" />
+                            </p:commandButton>
+                        </p:panelGrid>
+                        <p:panelGrid columns="1" styleClass="generalPanelStyle" rendered="#{userLogin.userLogged and centerRegistration.readyToCreateCenter}"
+                                     style="margin-top:10px">
+                            <p:panelGrid columns="2" columnClasses="column1,column2" style="margin-top: 30px">
+                            <h:outputLabel style="font-size:16px;font-weight: normal" 
+                                           value="Center:"/>
+                            <h:outputLabel style="font-size:16px;font-weight: bold" 
+                                           value="#{centerRegistration.newCenter.locationName}"/>
+                            <h:outputLabel style="font-size:16px;font-weight: normal" 
+                                           value="Address:"/>
+                            <h:outputLabel style="font-size:16px;font-weight: bold" 
+                                           value="#{centerRegistration.newCenter.locationAddress1} #{centerRegistration.newCenter.locationAddress2}"/>
+                            <h:outputLabel style="font-size:16px;font-weight: normal" 
+                                           value="City:"/>
+                            <h:outputLabel style="font-size:16px;font-weight: bold" 
+                                           value="#{centerRegistration.newCenter.locationCity}"/>
+                            <h:outputLabel style="font-size:16px;font-weight: normal" 
+                                           value="State/Zip code:"/>
+                            <h:outputLabel style="font-size:16px;font-weight: bold" 
+                                           value="#{centerRegistration.newCenter.locationState} / #{centerRegistration.newCenter.locationZipcode}"/>
+                            <h:outputLabel style="font-size:16px;font-weight: normal" 
+                                           value="Sessions:"/>
+                            <h:outputLabel style="font-size:16px;font-weight: bold" 
+                                           value="#{centerRegistration.newCenter.numberOfSessions}"/>
+                            </p:panelGrid>
+                            <h:outputLabel style="font-size:14px;font-weight: lighter" 
+                                           value="You are ready to send a request to establish a new Math Kangaroo center. When you submit a request your new center will be created with a pending status and you will be contacted by the Math Kangaroo team to finalize registration."/>
+                            <p:panelGrid columns="2" columnClasses="column1,column2" style="margin-top: 30px"> 
+                                <p:commandButton style="font-size: 12px;background-color: orange;border-radius: 5px;" 
+                                                 value="Submit" 
+                                                 action="#{centerRegistration.saveNewCenter()}">
+                                </p:commandButton>
+                                <p:commandButton style="font-size: 12px;background-color: orange;border-radius: 5px" 
+                                                 value="Back"
+                                                 update=":newCenterForm" > 
+                                    <f:setPropertyActionListener target="#{centerRegistration.readyToCreateCenter}" value="false" />
+                                </p:commandButton>
+                            </p:panelGrid>
+                        </p:panelGrid>
+                        <p:panel id="centerPanel" styleClass="generalPanelStyle" rendered="#{userLogin.userLogged and !centerRegistration.readyToCreateCenter}">
+                            <h:outputLabel style="font-size:14px;font-weight: lighter;" 
+                                           value="Please provide all required information for your new Math Kangaroo center. Your center can have up to 5 sessions. For each session you need to provide time, seat capacity, session status (private or public), and select what levels are available. If you enter 0 for seat capacity it means seats are unlimited and you must accomodated all students that signed up to your center."/>
+                            <h:panelGrid columns="2" columnClasses="column1,column2" style="margin-top: 50px"> 
+
+                                <h:outputLabel value="Center Name: *" />  
+                                <p:inputText value="#{centerRegistration.newCenter.locationName}"   
+                                             title="Provide descriptive center name" 
+                                             maxlength="50"
+                                             style="width:350px"/>  
+                                <h:outputLabel value="Address1: *" />  
+                                <p:inputText value="#{centerRegistration.newCenter.locationAddress1}"   
+                                             title="Address part 1" />  
+                                <h:outputLabel value="Address2:" />  
+                                <p:inputText value="#{centerRegistration.newCenter.locationAddress2}"   
+                                             title="Address part 2" />  
+                                <h:outputLabel value="City: *" />  
+                                <p:inputText value="#{centerRegistration.newCenter.locationCity}"   
+                                             title="City name" />  
+                                <h:outputLabel value="State: *" />  
+                                <h:selectOneMenu styleClass="standardSelectOneMenu" value="#{centerRegistration.newCenter.locationState}" >
+                                    <f:selectItems value="#{centerRegistration.commonData.states}" var="state" itemValue="#{state.codeAlpha}" itemLabel="#{state.description}" />
+                                </h:selectOneMenu>
+                                <h:outputLabel value="Zip code: *" />  
+                                <p:inputMask mask="99999" value="#{centerRegistration.newCenter.locationZipcode}" 
+                                             title="Zip code" maxlength="5"
+                                             style="width:50px"/>  
+                                <h:outputLabel value="Website:" style="width:300px"/>  
+                                <p:inputText value="#{centerRegistration.newCenter.website}"   
+                                             title="Provide your center website, if any" />  
+                                <h:outputLabel value="Number of sessions: *" />  
+                                <h:selectOneMenu styleClass="standardSelectOneMenu" value="#{centerRegistration.newCenter.numberOfSessions}" label="#{centerRegistration.newCenter.numberOfSessions}" >
+                                    <f:selectItem itemValue="0" itemLabel="Select number" />
+                                    <f:selectItem itemValue="1" itemLabel="1 session" />
+                                    <f:selectItem itemValue="2" itemLabel="2 sessions" />
+                                    <f:selectItem itemValue="3" itemLabel="3 sessions" />
+                                    <f:selectItem itemValue="4" itemLabel="4 sessions" />
+                                    <f:selectItem itemValue="5" itemLabel="5 sessions" />
+                                    <p:ajax event="change" process=":newCenterForm" update=":newCenterForm"/>
+                                </h:selectOneMenu>
+                            </h:panelGrid>
+                            <p:panel rendered="#{centerRegistration.newCenter.numberOfSessions > 0}" style="margin: 0 0 0 0;padding: 0 0 0 0">
+                                <p:panelGrid id="sessionPanel" columns="1" styleClass="generalPanelStyle2">
+                                    <p:panelGrid id="pg1" rendered="#{centerRegistration.newCenter.numberOfSessions > 0}" 
+                                                 styleClass="generalPanelStyle2"
+                                                 columns="5" columnClasses="column12,column12,column12,column12,column12">
+                                        <p:outputLabel value="SESSION 1" ></p:outputLabel>
+                                        <p:panelGrid styleClass="generalPanelStyle2" columns="1">
+                                            <p:outputLabel for="time1" value="Time:" />
+                                            <p:calendar id="time1" value="#{centerRegistration.session1.competitionDate}" pattern="hh:mm a" timeOnly="true"  />
+                                        </p:panelGrid>
+                                        <p:panelGrid styleClass="generalPanelStyle2" columns="1">
+                                            <p:outputLabel value="Seats (0-unlimited)"></p:outputLabel>
+                                            <p:inputMask mask="?999" value="#{centerRegistration.session1.seatCapacity}" 
+                                                         title="Provide seat capacity for this session" maxlength="3"
+                                                         style="width:30px"/>
+                                        </p:panelGrid>
+                                        <p:panelGrid styleClass="generalPanelStyle2" columns="1">
+                                            <p:outputLabel value="Levels offered"/>
+                                            <p:selectManyButton value="#{centerRegistration.selectedLevels1}" >
+                                                <f:selectItems value="#{centerRegistration.levels1}"/>
+                                            </p:selectManyButton>
+                                        </p:panelGrid>
+                                        <p:panelGrid styleClass="generalPanelStyle2" columns="1">
+                                            <p:outputLabel value="Status"/>
+                                            <p:selectOneButton value="#{centerRegistration.session1.sessionStatus}" >
+                                                <f:selectItem itemLabel="Public" itemValue="0" />
+                                                <f:selectItem itemLabel="Private" itemValue="1" />
+                                            </p:selectOneButton>
+                                        </p:panelGrid>
+                                    </p:panelGrid>
+                                    <p:panelGrid id="pg2" rendered="#{centerRegistration.newCenter.numberOfSessions > 1}" 
+                                                 styleClass="generalPanelStyle2"
+                                                 columns="5" columnClasses="column12,column12,column12,column12,column12">
+                                        <p:outputLabel value="SESSION 2" ></p:outputLabel>
+                                        <p:panelGrid styleClass="generalPanelStyle2" columns="1">
+                                            <p:outputLabel for="time2" value="Time:" />
+                                            <p:calendar id="time2" value="#{centerRegistration.session2.competitionDate}" pattern="hh:mm a" timeOnly="true"  />
+                                        </p:panelGrid>
+                                        <p:panelGrid styleClass="generalPanelStyle2" columns="1">
+                                            <p:outputLabel value="Seats (0-unlimited)"></p:outputLabel>
+                                            <p:inputMask mask="?999" value="#{centerRegistration.session2.seatCapacity}" 
+                                                         title="Provide seat capacity for this session" maxlength="3"
+                                                         style="width:30px"/>
+                                        </p:panelGrid>
+                                        <p:panelGrid styleClass="generalPanelStyle2" columns="1">
+                                            <p:outputLabel value="Levels offered"/>
+                                            <p:selectManyButton value="#{centerRegistration.selectedLevels2}" >
+                                                <f:selectItems value="#{centerRegistration.levels2}"/>
+                                            </p:selectManyButton>
+                                        </p:panelGrid>
+                                        <p:panelGrid styleClass="generalPanelStyle2" columns="1">
+                                            <p:outputLabel value="Status"/>
+                                            <p:selectOneButton value="#{centerRegistration.session2.sessionStatus}" >
+                                                <f:selectItem itemLabel="Public" itemValue="0" />
+                                                <f:selectItem itemLabel="Private" itemValue="1" />
+                                            </p:selectOneButton>
+                                        </p:panelGrid>
+                                    </p:panelGrid>
+                                    <p:panelGrid id="pg3" rendered="#{centerRegistration.newCenter.numberOfSessions > 2}" 
+                                                 styleClass="generalPanelStyle2"
+                                                 columns="5" columnClasses="column12,column12,column12,column12,column12">
+                                        <p:outputLabel value="SESSION 3" ></p:outputLabel>
+                                        <p:panelGrid styleClass="generalPanelStyle2" columns="1">
+                                            <p:outputLabel for="time3" value="Time:" />
+                                            <p:calendar id="time3" value="#{centerRegistration.session3.competitionDate}" pattern="hh:mm a" timeOnly="true"  />
+                                        </p:panelGrid>
+                                        <p:panelGrid styleClass="generalPanelStyle2" columns="1">
+                                            <p:outputLabel value="Seats (0-unlimited)"></p:outputLabel>
+                                            <p:inputMask mask="?999" value="#{centerRegistration.session3.seatCapacity}" 
+                                                         title="Provide seat capacity for this session" maxlength="3"
+                                                         style="width:30px"/>
+                                        </p:panelGrid>
+                                        <p:panelGrid styleClass="generalPanelStyle2" columns="1">
+                                            <p:outputLabel value="Levels offered"/>
+                                            <p:selectManyButton value="#{centerRegistration.selectedLevels3}" >
+                                                <f:selectItems value="#{centerRegistration.levels3}"/>
+                                            </p:selectManyButton>
+                                        </p:panelGrid>
+                                        <p:panelGrid styleClass="generalPanelStyle2" columns="1">
+                                            <p:outputLabel value="Status"/>
+                                            <p:selectOneButton value="#{centerRegistration.session3.sessionStatus}" >
+                                                <f:selectItem itemLabel="Public" itemValue="0" />
+                                                <f:selectItem itemLabel="Private" itemValue="1" />
+                                            </p:selectOneButton>
+                                        </p:panelGrid>
+                                    </p:panelGrid>
+                                    <p:panelGrid id="pg4" rendered="#{centerRegistration.newCenter.numberOfSessions > 3}" 
+                                                 styleClass="generalPanelStyle2"
+                                                 columns="5" columnClasses="column12,column12,column12,column12,column12">
+                                        <p:outputLabel value="SESSION 4" ></p:outputLabel>
+                                        <p:panelGrid styleClass="generalPanelStyle2" columns="1">
+                                            <p:outputLabel for="time4" value="Time:" />
+                                            <p:calendar id="time4" value="#{centerRegistration.session4.competitionDate}" pattern="hh:mm a" timeOnly="true"  />
+                                        </p:panelGrid>
+                                        <p:panelGrid styleClass="generalPanelStyle2" columns="1">
+                                            <p:outputLabel value="Seats (0-unlimited)"></p:outputLabel>
+                                            <p:inputMask mask="?999" value="#{centerRegistration.session4.seatCapacity}" 
+                                                         title="Provide seat capacity for this session" maxlength="3"
+                                                         style="width:30px"/>
+                                        </p:panelGrid>
+                                        <p:panelGrid styleClass="generalPanelStyle2" columns="1">
+                                            <p:outputLabel value="Levels offered"/>
+                                            <p:selectManyButton value="#{centerRegistration.selectedLevels4}" >
+                                                <f:selectItems value="#{centerRegistration.levels4}"/>
+                                            </p:selectManyButton>
+                                        </p:panelGrid>
+                                        <p:panelGrid styleClass="generalPanelStyle2" columns="1">
+                                            <p:outputLabel value="Status"/>
+                                            <p:selectOneButton value="#{centerRegistration.session4.sessionStatus}" >
+                                                <f:selectItem itemLabel="Public" itemValue="0" />
+                                                <f:selectItem itemLabel="Private" itemValue="1" />
+                                            </p:selectOneButton>
+                                        </p:panelGrid>
+                                    </p:panelGrid>
+                                    <p:panelGrid id="pg5" rendered="#{centerRegistration.newCenter.numberOfSessions > 4}" 
+                                                 styleClass="generalPanelStyle2"
+                                                 columns="5" columnClasses="column12,column12,column12,column12,column12">
+                                        <p:outputLabel value="SESSION 5" ></p:outputLabel>
+                                        <p:panelGrid styleClass="generalPanelStyle2" columns="1">
+                                            <p:outputLabel for="time5" value="Time:" />
+                                            <p:calendar id="time5" value="#{centerRegistration.session5.competitionDate}" pattern="hh:mm a" timeOnly="true"  />
+                                        </p:panelGrid>
+                                        <p:panelGrid styleClass="generalPanelStyle2" columns="1">
+                                            <p:outputLabel value="Seats (0-unlimited)"></p:outputLabel>
+                                            <p:inputMask mask="?999" value="#{centerRegistration.session5.seatCapacity}" 
+                                                         title="Provide seat capacity for this session" maxlength="3"
+                                                         style="width:30px"/>
+                                        </p:panelGrid>
+                                        <p:panelGrid styleClass="generalPanelStyle2" columns="1">
+                                            <p:outputLabel value="Levels offered"/>
+                                            <p:selectManyButton value="#{centerRegistration.selectedLevels5}" >
+                                                <f:selectItems value="#{centerRegistration.levels5}"/>
+                                            </p:selectManyButton>
+                                        </p:panelGrid>
+                                        <p:panelGrid styleClass="generalPanelStyle2" columns="1">
+                                            <p:outputLabel value="Status"/>
+                                            <p:selectOneButton value="#{centerRegistration.session5.sessionStatus}" >
+                                                <f:selectItem itemLabel="Public" itemValue="0" />
+                                                <f:selectItem itemLabel="Private" itemValue="1" />
+                                            </p:selectOneButton>
+                                        </p:panelGrid>
+                                    </p:panelGrid>
+                                </p:panelGrid>
+                            </p:panel>
+                            <p:messages closable="true"/>
+                            <p:panelGrid columns="1" columnClasses="column12" style="margin-top: 30px"> 
+                                <p:commandButton style="font-size: 12px;background-color: orange;border-radius: 5px" 
+                                                 value="Verify and Confirm" 
+                                                 update=":newCenterForm"
+                                                 actionListener="#{centerRegistration.verifyNewCenter}"/> 
+<!--                                <p:commandButton style="font-size: 12px;background-color: orange;border-radius: 5px" 
+                                                 value="Cancel" ajax="false" action="http://www.mathKangaroo.org/mk/default.html"/>
+-->
+                            </p:panelGrid>
+                        </p:panel>
+                    </p:panel>
+                </h:form>      
+            </div>
+            <div id="footer">Copyright © 2003 of Math Kangaroo in USA, NFP Inc. All Rights Reserved.</div>
+        </div>
+    </h:body>
+</html>
+
+

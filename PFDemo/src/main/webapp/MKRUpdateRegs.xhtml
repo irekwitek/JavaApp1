@@ -1,0 +1,402 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Registration Update</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="css/maincss.css" rel="stylesheet" type="text/css"/>        
+        <link rel="stylesheet" href="css/newcss.css" type="text/css"/>
+        <link rel="stylesheet" href="css/newcss1.css" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript">
+
+            window.onload = function()
+            {
+                var separator = " - ";
+                var dateTime = new Date();
+                var formattedDateTime = dateTime.toLocaleDateString();
+                var divObject = document.getElementById("dateTimeValue");
+                divObject.innerHTML = formattedDateTime;
+            }
+        </script>
+        <script src="https://maps.google.com/maps/api/js?sensor=false" 
+                type="text/javascript">
+        </script>
+    </h:head>
+    <h:body>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{userLogin.checkRegistrationOpen}" />  
+        </f:metadata>
+        <div id="wrapper">
+            <ui:include src="main_header.html"/>
+            <div class="container">
+                <p:panel style="border:none;margin-bottom: 20px">
+                    <h:outputLabel styleClass="logotxt5" style="font-weight: normal;text-align: center;" value="Update Student Registration" />
+                    <p:panel rendered="#{userLogin.userLogged}" style="float:right;padding-right: 30px;border:none;">
+                        <h:outputLabel style="font-weight: normal;text-align: center;" value="Welcome, #{userLogin.user.userFirstName} #{userLogin.user.userLastName}!" />
+                    </p:panel>
+                </p:panel>
+                <h:form id="regWizardForm" styleClass="regWizardStyle" >
+                    <p:panel id="studentUpdatePanel" styleClass="centerPanelHeader studentPanelContent" style="border:none">
+                        <p:panelGrid>
+                            <p:row>
+                                <p:column style="width: 40%;vertical-align: top">
+                                    <p:panel styleClass="generalPanelGridStyle">
+                                        <h:outputText style="font-size: 16px;font-weight: bold" value="Student #{registrationBean.getStudentModeName()}"/>
+                                    </p:panel>
+                                    <p:panel styleClass="generalPanelGridStyle">
+                                        <h:outputText style="font-size: 14px;font-family: verdana;color: #946890;font-weight: bold" value="Student Information"/>
+                                    </p:panel>
+                                    <p:panel id="studentCenter" styleClass="generalPanelStyle">
+                                        <h:panelGrid styleClass="generalPanelStyle" columns="2" >
+                                            <h:outputLabel value="Center:" />  
+                                            <h:outputText value="#{registrationBean.registeredStudent.locationCode}" />  
+                                            <h:outputLabel value="Session:" />  
+                                            <h:outputText value="#{registrationBean.registeredStudent.sessionName}" />  
+                                            <h:outputLabel value="Available Seats:" /> 
+                                            <h:outputText id ="seatCounter" value="#{registrationBean.seatCounter}" />  
+                                            <p:poll interval="5" update="seatCounter" />
+                                        </h:panelGrid>
+                                        <p:commandButton style="margin-top: 5px;font-size: 10px;background-color: orange;margin-right: 10px;border-radius: 5px" value="Change Center" 
+                                                         onclick="dlgCenter.show();"
+                                                         update=":regCenterChoice" />
+                                        <p:commandButton style="margin-top: 5px;font-size: 10px;background-color: orange;margin-right: 10px;border-radius: 5px" value="Select Private Center" 
+                                                         onclick="dlgPrivateCenter.show();"/>
+                                    </p:panel>
+                                    <h:panelGrid styleClass="generalPanelStyle" columns="2" >
+                                        <h:outputLabel for="fname" value="Student First Name: *" />  
+                                        <p:inputText id="fname" value="#{registrationBean.registeredStudent.firstName}" label="Student First Name" >  
+                                        </p:inputText>  
+                                        <h:outputLabel for="mname" value="Student Middle Initial:" />  
+                                        <p:inputText id="mname" maxlength="1" value="#{registrationBean.registeredStudent.middleName}" label="Student Middle Initial" style="width: 20px">  
+                                        </p:inputText>  
+                                        <h:outputLabel for="lname" value="Student Last Name: *" />  
+                                        <p:inputText id="lname" value="#{registrationBean.registeredStudent.lastName}" label="Student Last Name">  
+                                        </p:inputText>  
+                                        <h:outputLabel for="levelId" value="Level (Grade): *" />  
+                                        <h:selectOneMenu id="levelId" styleClass="studentPanelSelectOneMenu" value="#{registrationBean.registeredStudent.levelCode}" label="#{registrationBean.registeredStudent.level}" >
+                                            <f:selectItems value="#{registrationBean.commonData.levels}" var="level" itemLabel="#{level.codeAlpha}" itemValue="#{level.code}" />
+                                        </h:selectOneMenu>
+                                        <h:outputLabel for="genderId" value="Gender:" />  
+                                        <h:selectOneMenu id="genderId" styleClass="studentPanelSelectOneMenu" value="#{registrationBean.registeredStudent.genderCode}" label="#{registrationBean.registeredStudent.gender}" >
+                                            <f:selectItems value="#{registrationBean.commonData.genders}" var="gender" itemLabel="#{gender.codeAlpha}" itemValue="#{gender.code}" />
+                                        </h:selectOneMenu>
+                                        <h:outputLabel for="tshirtId" value="T-Shirt Size: *" />  
+                                        <h:selectOneMenu id="tshirtId" styleClass="studentPanelSelectOneMenu" value="#{registrationBean.registeredStudent.tshirtSizeCode}" label="#{registrationBean.registeredStudent.tshirtSize}" >
+                                            <f:selectItems value="#{registrationBean.commonData.tShirtSizes}" var="tshirt" itemLabel="#{tshirt.codeAlpha}" itemValue="#{tshirt.code}" />
+                                        </h:selectOneMenu>
+                                        <h:outputLabel for="emailIdUser" value="E-mail: *" />  
+                                        <h:outputText id="emailIdUser" value="#{registrationBean.registeredStudent.parentGuardianEmail}" />  
+                                        <h:outputLabel for="emailId" value="Student E-mail (optional): " />  
+                                        <p:inputText id="emailId" value="#{registrationBean.registeredStudent.studentEmail}" label="Student E-mail">  
+                                        </p:inputText>  
+                                        <h:outputLabel for="contactId" value="Phone Number: *" />  
+                                        <p:inputMask id="contactId" value="#{registrationBean.registeredStudent.contactPhone1}" mask="(999) 999-9999" label="Phone Number"/>  
+                                        <h:outputLabel for="resstate" value="State of recidency: " />  
+                                        <h:selectOneMenu id="resstate" styleClass="studentPanelSelectOneMenu" style="width:55px" value="#{registrationBean.registeredStudent.stateOfResidency}" label="#{registrationBean.registeredStudent.stateOfResidency}" >
+                                            <f:selectItems value="#{registrationBean.commonData.states}" var="rstate" itemLabel="#{rstate.codeAlpha}" itemValue="#{rstate.codeAlpha}" />
+                                        </h:selectOneMenu>
+                                        <p:tooltip for="resstate" value="Select only if student residency state is different than chosen center state"/>
+                                    </h:panelGrid>
+                                    <p:panel styleClass="generalPanelGridStyle">
+                                        <h:outputText style="font-size: 14px;font-family: verdana;color: #946890;font-weight: bold" value="Optional"/>
+                                    </p:panel>
+                                    <p:fieldset styleClass="studentFieldsetPaneStyle" collapsed="true" legend="Parent/Guardian Note" toggleable="true" toggleSpeed="500" >  
+                                        <h:panelGrid styleClass="generalPanelGridStyle" columns="2">
+                                            <h:outputLabel for="parentNoteId" value="Note to MK team:" />  
+                                            <p:inputTextarea id="parentNoteId" rows="5" cols="30" value="#{registrationBean.registeredStudent.parentNote}" style="width: 250px;height: 100px" />
+                                        </h:panelGrid>
+                                    </p:fieldset>
+                                    <p:fieldset styleClass="studentFieldsetPaneStyle" collapsed="true" legend="School and Home Address" toggleable="true" toggleSpeed="500">  
+                                        <h:panelGrid styleClass="generalPanelGridStyle" columns="2">
+                                            <h:outputLabel for="address1Id" value="Address:" />  
+                                            <p:inputText id="address1Id" value="#{registrationBean.registeredStudent.address1}" label="Address" >  
+                                            </p:inputText>  
+                                            <h:outputLabel for="cityId" value="City:" />  
+                                            <p:inputText id="cityId" value="#{registrationBean.registeredStudent.city}" label="City" >  
+                                            </p:inputText>  
+                                            <h:outputLabel for="stateId" value="State:" />  
+                                            <h:selectOneMenu id="stateId" styleClass="studentPanelSelectOneMenu" value="#{registrationBean.registeredStudent.state}" label="#{registrationBean.registeredStudent.stateName}" >
+                                                <f:selectItems value="#{registrationBean.commonData.states}" var="state" itemLabel="#{state.description}" itemValue="#{state.codeAlpha}" />
+                                            </h:selectOneMenu>
+                                            <h:outputLabel for="zipcodeId" value="Zip code:" />  
+                                            <p:inputMask id="zipcodeId" mask="99999" value="#{registrationBean.registeredStudent.zipcode}" label="Zip code" style="width: 50px"/>  
+                                            <h:outputLabel for="schoolId" value="School Name:" />  
+                                            <p:inputText id="schoolId" value="#{registrationBean.registeredStudent.schoolName}" label="School Name" >  
+                                            </p:inputText>  
+                                            <h:outputLabel for="teacherFirstId" value="Teacher's First Name:" />  
+                                            <p:inputText id="teacherFirstId" value="#{registrationBean.registeredStudent.teacherFirstName}" label="First Name" >  
+                                            </p:inputText>  
+                                            <h:outputLabel for="teacherLastId" value="Teacher's Last Name:" />  
+                                            <p:inputText id="teacherLastId" value="#{registrationBean.registeredStudent.teacherLastName}" label="Last Name" >  
+                                            </p:inputText>  
+                                            <h:outputLabel for="teacherEmailId" value="Teacher's Email:" />  
+                                            <p:inputText id="teacherEmailId" value="#{registrationBean.registeredStudent.teacherEmail}" label="Teacher's Email" >  
+                                            </p:inputText>  
+                                        </h:panelGrid>
+                                    </p:fieldset>
+                                    <p:fieldset styleClass="studentFieldsetPaneStyle" collapsed="true" legend="How did you hear about us?" toggleable="true" toggleSpeed="500" >  
+                                        <h:panelGrid styleClass="generalPanelGridStyle" columns="2">
+                                            <h:outputLabel for="adCodeId" value="Select:" />  
+                                            <h:selectOneMenu id="adCodeId" styleClass="studentPanelSelectOneMenu" value="#{registrationBean.registeredStudent.adCode}" >
+                                                <f:selectItems value="#{registrationBean.commonData.adCodes}" var="adCode" itemLabel="#{adCode.codeAlpha}" itemValue="#{adCode.code}" />
+                                            </h:selectOneMenu>
+                                            <h:outputLabel for="adNoteId" value="Additional Info:" />  
+                                            <p:inputTextarea id="adNoteId" rows="3" cols="20" value="#{registrationBean.registeredStudent.adNote}" style="width: 150px;height: 50px" />
+                                        </h:panelGrid>
+                                    </p:fieldset>
+                                    <p:messages id="studentValidateMessage" closable="true"/>
+                                    <p:panel styleClass="detailPanelStyle" style="text-align: center">
+                                        <p:commandButton style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" 
+                                                         id="updateStudentButton"
+                                                         update=":regWizardForm :dlgMessageForm" 
+                                                         value="Update This Student" 
+                                                         disabled="#{registrationBean.studentBeingUpdated == null }"
+                                                         actionListener="#{registrationBean.validateAndUpdateStudent}"/>
+                                        <p:commandButton value="Clear" style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" update=":regWizardForm" actionListener="#{registrationBean.clearStudentData}"/>
+                                        <p:spacer width="50px"/>
+                                        <p:commandButton value="Exit" style="font-size: 12px;background-color: lightgray;margin-right: 10px;border-radius: 10px" action="MKRHome"/>
+                                    </p:panel>
+                                    <p:blockUI block="studentUpdatePanel" trigger="updateStudentButton" />
+                                </p:column>
+
+                                <p:column style="vertical-align: top">
+                                    <p:panel styleClass="generalPanelGridStyle" style="margin-top: 50px; margin-bottom: 30px">
+                                        <h:outputText value="Click on 'Student ID' to update student information. Click the 'Update This Student' button at the bottom of the page to save any changes. If you choose to change the competition center or session, an e-mail will be sent to both centers' managers informing them about your update. You can also unregister your student and receive a refund by clicking the 'X' icon, if this option is available." 
+                                                      style="font-size: 11px"/>
+                                    </p:panel>
+                                    <p:panel styleClass="generalPanelGridStyle">
+                                        <h:outputText style="font-size: 14px;font-weight: bold" value="Students Currently Registered"/>
+                                    </p:panel>
+                                    <p:dataTable styleClass="registeredStudentsTableStyle" var="regStudent" value="#{registrationBean.myCurrentStudents}"  
+                                                 emptyMessage="You have no students signed up for this year's competition yet.">  
+                                        <p:column headerText="Student ID" sortBy="#{regStudent.studentIdentificationCode}">  
+                                            <p:commandLink update=":regWizardForm" title="Click to select this student to update registration data" 
+                                                           actionListener="#{registrationBean.selectToUpdate(regStudent)}" >
+                                                <h:outputText style="color: blue;font-weight: bold;font-size: 12px" value="#{regStudent.studentIdentificationCode}" />
+                                                <f:setPropertyActionListener value="#{regStudent}" target="#{registrationBean.studentBeingUpdated}" />  
+                                            </p:commandLink>
+                                        </p:column>  
+                                        <p:column headerText="First" sortBy="#{regStudent.firstName}">  
+                                            <h:outputText value="#{regStudent.firstName}" />  
+                                        </p:column>  
+                                        <p:column headerText="Last" sortBy="#{regStudent.lastName}">  
+                                            <h:outputText value="#{regStudent.lastName}" />  
+                                        </p:column>  
+                                        <p:column headerText="Level" sortBy="#{regStudent.levelCode}">  
+                                            <h:outputText value="#{regStudent.levelCode}" />  
+                                        </p:column>  
+                                        <p:column headerText="Center" sortBy="#{regStudent.locationCode}">  
+                                            <h:outputText value="#{regStudent.locationCode}/#{regStudent.sessionName}" />  
+                                        </p:column>  
+                                        <p:column headerText="Status" >  
+                                            <h:outputText value="#{registrationBean.commonData.getRegistrationStatusCodeName(regStudent.status)}" style="font-style: italic" />  
+                                            <p:spacer height="0px" width="20px"/>
+                                            <p:commandLink update=":unregisterStudentForm" title="Unregister and receive refund" 
+                                                           oncomplete="dlgUnregisterStudent.show();">
+                                                <p:graphicImage value="images/unregister.png" />
+                                                <f:setPropertyActionListener value="#{regStudent}" target="#{registrationBean.studentToUnregister}" />  
+                                            </p:commandLink>
+                                        </p:column>  
+                                    </p:dataTable>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                </h:form>
+
+                <p:dialog id="centerSelection" header="Select Math Kangaroo Center" widgetVar="dlgCenter" resizable="true" hideEffect="clip" modal="true" width="950" height="500">  
+                    <h:form id="regCenterChoice" class="regCenterChoice">
+                        <p:panelGrid>
+                            <p:row>
+                                <p:column style="vertical-align: top">
+                                    <p:panel style="border: none;padding-top: 40px">
+                                        <h:panelGrid id="locationChooser" columns="2" >
+                                            <p:outputLabel for="state" value="State:" />
+                                            <h:selectOneMenu id="state" value="#{registrationBean.state}" style="width:125px;height: 23px;font-size: 12px">
+                                                <f:selectItem itemLabel="Select State" itemValue="" />
+                                                <f:selectItems value="#{registrationBean.states}" />
+                                                <p:ajax update="city mkcenter mksession mapPanel detailPanel btnCenter" listener="#{registrationBean.loadCities}" />   
+                                            </h:selectOneMenu>
+                                            <p:outputLabel value="City:" />
+                                            <h:selectOneMenu id="city" value="#{registrationBean.city}" style="width:125px;height: 23px;font-size: 12px">
+                                                <f:selectItem itemLabel="Select City" itemValue="" />
+                                                <f:selectItems value="#{registrationBean.cities}" />
+                                                <p:ajax update="mkcenter mksession mapPanel detailPanel btnCenter" listener="#{registrationBean.loadCenters}" />   
+                                            </h:selectOneMenu>
+                                            <p:outputLabel value="Center:" />
+                                            <h:selectOneMenu id="mkcenter" value="#{registrationBean.center.locationCode}" label="#{registrationBean.center.locationName}" style="width:125px;height: 23px;font-size: 12px">
+                                                <f:selectItem itemLabel="Select Center" itemValue="" />
+                                                <f:selectItems value="#{registrationBean.centers}" var="center" itemLabel="#{center.locationName}" itemValue="#{center.locationCode}" />
+                                                <p:ajax update="mksession mapPanel detailPanel btnCenter" listener="#{registrationBean.loadSessions}" />   
+                                            </h:selectOneMenu>
+                                            <p:outputLabel value="Session:" />
+                                            <h:selectOneMenu id="mksession" value="#{registrationBean.centerSession.sessionID}" label="#{registrationBean.centerSession.sessionName}" style="width:125px;height: 23px;font-size: 12px">
+                                                <f:selectItem itemLabel="Select Session" itemValue="0" />
+                                                <f:selectItems value="#{registrationBean.sessions}" var="ses" itemLabel="#{ses.sessionName}" itemValue="#{ses.sessionID}" />
+                                                <p:ajax update="detailPanel btnCenter" listener="#{registrationBean.loadSessionInfo}" />   
+                                            </h:selectOneMenu>
+                                        </h:panelGrid>
+                                    </p:panel>
+                                </p:column>
+                                <p:column style="width: 40%;vertical-align: top">
+                                    <p:panel id="detailPanel" styleClass="detailPanelStyle">
+                                        <p:panelGrid rendered="#{registrationBean.centerChosen != null and registrationBean.sessionChosen != null}" columns="2" styleClass="centerPanelHeader centerPanelContent">
+                                            <f:facet name="header">
+                                                <h:outputText value="Center Session Info" />
+                                            </f:facet>
+                                            <h:outputText value="Name:" />
+                                            <h:outputText value="#{registrationBean.centerChosen.locationName}" />
+
+                                            <h:outputText value="Session:" />
+                                            <h:outputText value="#{registrationBean.sessionChosen.sessionName}" />
+
+                                            <h:outputText value="Status:" />
+                                            <h:outputText value="#{registrationBean.sessionChosen.sessionStatus == 0 ? 'PUBLIC' : 'PRIVATE'}" />
+
+                                            <h:outputText value="Address:" />
+                                            <h:outputText value="#{registrationBean.centerChosen.locationAddress1} #{registrationBean.centerChosen.locationCity}, #{registrationBean.centerChosen.locationState} #{registrationBean.centerChosen.locationZipcode}" />
+
+                                            <h:outputText value="Time:" />
+                                            <h:outputText value="#{registrationBean.sessionChosen.competitionTimeFriendly}" />
+
+                                            <h:outputText value="Levels Offered:" />
+                                            <h:outputText value="#{registrationBean.sessionChosen.levels}" />
+
+                                            <h:outputText value="Seat Capacity:" />
+                                            <h:outputText value="#{registrationBean.sessionChosen.seatCapacity}" />
+
+                                            <h:outputText value="Seat Available:" />
+                                            <h:outputText value="#{registrationBean.chosenSessionAvailableSeatCount()}" />
+
+                                        </p:panelGrid>
+                                    </p:panel>
+                                </p:column>
+                                <p:column style="width: 40%;vertical-align: top">
+                                    <p:panel id="mapPanel" styleClass="mapPanelStyle">
+                                        <p:panelGrid rendered="#{registrationBean.centerChosen != null}" columns="1" styleClass="centerPanelHeader centerPanelContent" >
+                                            <f:facet name="header">
+                                                <h:outputText value="Map #{registrationBean.mapTitle}" />
+                                            </f:facet>
+                                            <p:gmap center="${registrationBean.centerChosen.latitude}, ${registrationBean.centerChosen.longitude}" model="#{registrationBean.myMapModel}" zoom="15" type="HYBRID" style="width:350px;height:350px" />
+                                        </p:panelGrid>
+                                    </p:panel>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                        <p:panelGrid columns="1" >
+                            <p:panel id="btnCenter" styleClass="detailPanelStyle">
+                                <p:commandButton style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" 
+                                                 update=":regWizardForm:studentCenter" 
+                                                 disabled="#{registrationBean.centerChosen == null or registrationBean.sessionChosen == null}" 
+                                                 value="Select This Center" onclick="dlgCenter.hide();"
+                                                 actionListener="#{registrationBean.setCenterForRegisteredStudent}" />
+                                <p:commandButton value="Cancel" style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" 
+                                                 onclick="dlgCenter.hide();"/>
+                            </p:panel>
+                        </p:panelGrid>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="privateCenterSelection" header="Math Kangaroo Private Session Selector" widgetVar="dlgPrivateCenter" resizable="true" hideEffect="clip" modal="true" width="650" height="450">  
+                    <h:form id="privateCenterChoiceForm" class="regCenterChoice">
+                        <p:panelGrid columns="1" >
+                            <p:panel style="border:none;font-size:12px">
+                                <p:panel style="border:none;" rendered="#{!registrationBean.privateCenterFound}">
+                                    <h:outputText value="You can register your student for a session at a private center using the code received from the center's manager(s). The manager retains the right to cancel the registration if the student is not affiliated with the center." 
+                                                  style="font-family: verdana;font-size: 12px;font-weight: normal;color:black "/>
+                                    <p:separator style="height: 1px"/>
+                                    <h:outputText value="Enter the code below, select 'Find Center', check the center info, and confirm your choice. All of the private sessions for that center will be added to your selection." 
+                                                  style="font-family: verdana;font-size: 12px;font-weight: normal;color:black "/>
+                                    <h:panelGrid columns="2" columnClasses="column1,column2"> 
+                                        <h:outputLabel value="Center Manager's Code:"/>
+                                        <p:inputText value="#{registrationBean.privateCenter.locationRegistrationCode}"   
+                                                     label="privateCenterCode" />  
+                                        <p:commandButton style="font-size: 12px;background-color: orange;border-radius: 5px" 
+                                                         value="Find Center" update=":privateCenterChoiceForm" 
+                                                         actionListener="#{registrationBean.findPrivateCenter}"/> 
+                                        <p:commandButton style="font-size: 12px;background-color: orange;border-radius: 5px" 
+                                                         value="Cancel" 
+                                                         actionListener="#{registrationBean.clearPrivateCenter}"
+                                                         onclick="dlgPrivateCenter.hide();" /> 
+                                    </h:panelGrid>
+                                </p:panel>
+                                <p:panel style="border:none;" rendered="#{registrationBean.privateCenterFound}">
+                                    <h:panelGrid columns="2" columnClasses="column1,column2"> 
+                                        <h:outputLabel value="Center Name:"/>
+                                        <p:outputLabel value="#{registrationBean.privateCenter.locationName}" style="color: blue" />  
+                                        <h:outputLabel value="Address:"/>
+                                        <p:outputLabel value="#{registrationBean.privateCenter.locationAddress1}" style="color: blue" />  
+                                        <h:outputLabel value="City:"/>
+                                        <p:outputLabel value="#{registrationBean.privateCenter.locationCity}" style="color: blue" />  
+                                        <h:outputLabel value="State:"/>
+                                        <p:outputLabel value="#{registrationBean.privateCenter.locationState}" style="color: blue" />  
+                                        <h:outputLabel value="Zip code:"/>
+                                        <p:outputLabel value="#{registrationBean.privateCenter.locationZipcode}" style="color: blue" />  
+                                        <p:commandButton style="font-size: 12px;background-color: orange;border-radius: 5px" 
+                                                         value="Click to Select Session(s)" 
+                                                         actionListener="#{registrationBean.addPrivateCenter()}"
+                                                         update=":regCenterChoice :privateCenterChoiceForm"
+                                                         oncomplete="dlgPrivateCenter.hide();dlgCenter.show();"
+                                                         /> 
+                                        <p:commandButton style="font-size: 12px;background-color: orange;border-radius: 5px" value="Cancel"
+                                                         actionListener="#{registrationBean.clearPrivateCenter}"
+                                                         update=":regCenterChoice :privateCenterChoiceForm"
+                                                         onclick="dlgPrivateCenter.hide();"/> 
+                                    </h:panelGrid>
+                                </p:panel>
+                                <p:messages closable="true"/>
+                            </p:panel>
+                        </p:panelGrid>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog widgetVar="dlgUnregisterStudent" modal="true" header="CONFIRMATION:" width="450px">
+                    <h:form id="unregisterStudentForm">
+                        <p:panel id="unregisterPanel" styleClass="centeredItemsPanel" >
+                            <p:panelGrid columns="1" style="border: none;">
+                                <h:outputLabel value="Unregister #{registrationBean.studentToUnregister.firstName} #{registrationBean.studentToUnregister.lastName} [#{registrationBean.studentToUnregister.studentIdentificationCode}] ?"/>
+                                <h:panelGroup>
+                                    <p:commandButton value="Unregister" oncomplete="dlgUnregisterStudent.hide()" id="unregisterButton"
+                                                     actionListener="#{registrationBean.unregisterStudent()}" styleClass="ui-priority-primary" update=":regWizardForm" 
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" /> 
+                                    <p:spacer width="10px"/>
+                                    <p:commandButton value="Cancel" oncomplete="dlgUnregisterStudent.hide()" styleClass="ui-priority-primary" immediate="true"
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" />
+                                </h:panelGroup>
+                            </p:panelGrid>
+                            <h:outputLabel style="color:red;font-size: 11px;" value="PROCESSING FEE: Users will be refunded #{registrationBean.getRefundPercentage()}% of the original registration fee upon unregistering students due to processing charges."/>
+                            <h:outputLabel style="color:black;font-size: 12px;" value=" Your refund amount will be: "/>
+                            <h:outputLabel style="color:blue;font-size: 12px;" value="#{registrationBean.getRefundAmount()}">
+                                <f:convertNumber pattern="$#0.00" />
+                            </h:outputLabel>
+                            <p:blockUI block="unregisterPanel" trigger="unregisterButton" />
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dialogMessage" widgetVar="dlgMessage" modal="true" header="MESSAGE" width="450px" >
+                    <h:form id="dlgMessageForm">
+                        <p:panel styleClass="centeredItemsPanel" >
+                            <p:panelGrid columns="1" style="border: none;text-align: center">
+                                <h:outputLabel value="#{registrationBean.dialogMessageText}"/>
+                                <p:commandButton value="OK" oncomplete="dlgMessage.hide()" 
+                                                 styleClass="ui-priority-primary" 
+                                                 style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" /> 
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+            </div>
+            <div id="footer">Copyright © 2003 of Math Kangaroo in USA, NFP Inc. All Rights Reserved.</div>
+        </div>
+    </h:body>
+</html>
+

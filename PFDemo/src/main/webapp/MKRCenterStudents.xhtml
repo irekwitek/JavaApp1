@@ -1,0 +1,189 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Math Kangaroo Center Students</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="css/maincss.css" rel="stylesheet" type="text/css"/>        
+        <link rel="stylesheet" href="css/newcss.css" type="text/css"/>
+        <link rel="stylesheet" href="css/newcss1.css" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript">
+
+            window.onload = function()
+            {
+                var separator = " - ";
+                var dateTime = new Date();
+                var formattedDateTime = dateTime.toLocaleDateString();
+                var divObject = document.getElementById("dateTimeValue");
+                divObject.innerHTML = formattedDateTime;
+            };
+        </script>
+    </h:head>
+    <h:body>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{userLogin.isUserLoggedIn}" />  
+        </f:metadata>
+        <div id="wrapper">
+            <ui:include src="main_header.html"/>
+            <div class="container">
+                <h:outputLabel styleClass="logotxt5" style="font-weight: normal;text-align: center;" value="Center Students" />
+                <p:panel rendered="#{userLogin.userLogged}" style="float:right;padding-right: 30px;border:none;">
+                    <h:outputLabel style="font-weight: normal;text-align: center;" value="Welcome, #{userLogin.user.userFirstName} #{userLogin.user.userLastName}!" />
+                </p:panel>
+                <h:form id ="mainform" >
+                    <p:panel style="border:none;margin-top: 50px;min-height: 400px;">
+                        <h:outputLabel value="CENTER CODE: " style=""/>
+                        <h:outputLabel value="#{centerStudentsBean.selectedCenter.locationCode}" style="color: deeppink;font-size: 12px; font-weight: bold;"/>
+                        <p:spacer width="25px"/>
+                        <h:outputLabel value="SESSION: " style=""/>
+                        <h:outputLabel value="#{centerStudentsBean.selectedSession.sessionName}" style="color: deeppink;font-size: 12px; font-weight: bold;"/>
+                        <p:spacer width="25px"/>
+                        <h:outputLabel value="YOUR ROLE: " style=""/>
+                        <h:outputLabel value="#{userLogin.user.roleName}" style="color: deeppink;font-size: 12px; font-weight: bold;"/>
+                        <p:spacer width="10px"/>
+                        <h:outputLabel value="#{centerStudentsBean.managerCenterStatusText()}" style="color: darkgray;font-size: 12px; font-weight: bold;"/>
+                        <p:spacer width="100%" height="15px"/>
+                        <p:panel style="border:none">
+                            <h:outputLabel value="#{centerStudentsBean.currentRegistrationYear} Competition [#{centerStudentsBean.centerStudents.size()} registered students]" style="color: black;font-size: 12pt;font-weight: normal"/>
+                            <p:spacer height="100%" width="30px"/>
+                            <p:commandButton value="Download Full List" ajax="false" rendered="#{userLogin.adminLogged || centerStudentsBean.selectedCenter.managerPrimary}" onclick="PrimeFaces.monitorDownload(start, stop);" icon="ui-icon-arrowthick-1-s"
+                                             style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px"
+                                             title="Download full list of students and their data (csv format)">
+                                <p:fileDownload value="#{centerStudentsBean.file}" />
+                            </p:commandButton>
+                            <p:spacer height="100%" width="10px"/>
+                            <p:commandButton value="Download E-mails only" ajax="false" rendered="#{userLogin.adminLogged || centerStudentsBean.selectedCenter.managerPrimary}" onclick="PrimeFaces.monitorDownload(start, stop);" icon="ui-icon-arrowthick-1-s"
+                                             style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px"
+                                             title="Download Parent/Guardian emails (semi-comma seperated list)">
+                                <p:fileDownload value="#{centerStudentsBean.emailFile}" />
+                            </p:commandButton>
+                            <p:spacer height="100%" width="10px"/>
+                    <!--        <p:commandButton value="Email Students" id ="eCB" rendered="#{centerDetailsBean.selectedCenter.managerPrimary}" 
+                                             oncomplete="eDialog.show()" 
+                                             style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px"  />  
+                            <p:spacer height="100%" width="20px"/> -->
+                            <p:commandButton ajax="false" style="font-size: 12px;background-color: orange;border-radius: 10px" 
+                                             value="Back" action="#{userLogin.getCenterStudentsReturnPage()}"/> 
+                            <p:spacer height="20px" width="100%"/>
+                            <p:dataTable var="regStudent" value="#{centerStudentsBean.centerStudents}" styleClass="registeredStudentsTableStyle"
+                                         paginator="true" rows="16">  
+                                <p:column headerText="Action" id="actionColumn" style="width: 30px;color: red">  
+                                    <p:commandLink  title="#{centerStudentsBean.managerNoteTitle(regStudent)}" update=":dForm" oncomplete="cDialog.show()">
+                                        <p:graphicImage url="images/edit-note.png"/>
+                                        <f:setPropertyActionListener target="#{centerStudentsBean.selectedStudent}" value="#{regStudent}" />
+                                    </p:commandLink>
+                                </p:column>  
+                                <p:column headerText="Notes" >  
+                                    <p:graphicImage id="img1" rendered="#{regStudent.managerNote.trim().length() > 0}" url="images/manager-note.png" />  
+                                    <p:tooltip for="img1" showEffect="fade" hideEffect="fade" >  
+                                        <p:panel header="Manager Note" style="width: 300px;height: fit-content">  
+                                            <h:outputText value="#{regStudent.managerNote}"/>
+                                        </p:panel>
+                                    </p:tooltip>
+                                    <p:graphicImage id="img2" rendered="#{regStudent.parentNote.trim().length() > 0}" url="images/parent-note.png" />  
+                                    <p:tooltip for="img2" showEffect="fade" hideEffect="fade" >  
+                                        <p:panel header="Parent Note" style="width: 300px;height: fit-content">  
+                                            <h:outputText value="#{regStudent.parentNote}"/>
+                                        </p:panel>
+                                    </p:tooltip>
+                                </p:column>  
+                                <p:column headerText="First Name" sortBy="#{regStudent.firstName}">  
+                                    <h:outputText value="#{regStudent.firstName}" style="font-size: 11px"/>  
+                                </p:column>  
+                                <p:column headerText="Last Name" sortBy="#{regStudent.lastName}">  
+                                    <h:outputText value="#{regStudent.lastName}" style="font-size: 11px"/>  
+                                </p:column>  
+                                <p:column headerText="Student Code" sortBy="#{regStudent.studentIdentificationCode}">  
+                                    <h:outputText value="#{regStudent.studentIdentificationCode}" style="font-size: 11px"/>  
+                                </p:column>  
+                                <p:column headerText="Level" sortBy="#{regStudent.level}">  
+                                    <h:outputText value="#{regStudent.level}" style="font-size: 11px"/>  
+                                </p:column>  
+                                <p:column headerText="T-Shirt">  
+                                    <h:outputText value="#{regStudent.tshirtSize}" style="font-size: 10px"/>  
+                                </p:column>  
+                                <p:column headerText="Parent/Gardian Email">  
+                                    <h:outputText value="#{regStudent.parentGuardianEmail}" style="font-size: 11px"/>  
+                                </p:column>  
+                                <p:column headerText="Contact Phone">  
+                                    <h:outputText value="#{regStudent.contactPhone1}" style="font-size: 11px"/>  
+                                </p:column>  
+<!--                                <p:column headerText="Reg Date" sortBy="#{regStudent.dateTime}">  
+                                    <h:outputText value="#{regStudent.dateTime}" />
+                                </p:column>
+                                -->
+                            </p:dataTable>
+
+                            <p:messages closable="true" />
+                            <p:spacer height="20px" width="100%" />
+                            <p:commandButton ajax="false" style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" 
+                                             value="Back" action="#{userLogin.getCenterStudentsReturnPage()}"/> 
+
+                        </p:panel>
+                    </p:panel>
+                </h:form>
+
+                <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false" resizable="false">
+                    <p:graphicImage id="img33" url="images/ajaxloadingbar.gif" />
+                </p:dialog>
+
+                <script type="text/javascript">
+            function start() {
+                PF('statusDialog').show();
+            }
+
+            function stop() {
+                PF('statusDialog').hide();
+            }
+
+                </script>
+
+                <p:dialog header="MANAGER COMMENT" widgetVar="cDialog" resizable="false" style="background-color: #f5ebcb" 
+                          width="350" showEffect="clip" hideEffect="clip">  
+                    <h:form id="dForm" > 
+                        <h:outputText value="NAME: " style="color: black;font-weight: bold;font-size: 14px" />  
+                        <h:outputText value="#{centerStudentsBean.selectedStudent.firstName} #{centerStudentsBean.selectedStudent.lastName}" style="color: deeppink;font-weight: bold;font-size: 14px" />  
+                        <p:spacer width="100%" height="1px"/>
+                        <h:outputText value="ID: " style="color: black;font-weight: bold;font-size: 16px" />  
+                        <h:outputText value="#{centerStudentsBean.selectedStudent.studentIdentificationCode}" style="color: deeppink;font-weight: bold;font-size: 16px" />  
+                        <p:spacer width="100%" height="1px"/>
+                        <h:outputText value="LEVEL: " style="color: black;font-weight: bold;font-size: 14px" />  
+                        <h:outputText value="#{centerStudentsBean.selectedStudent.level}" style="color: deeppink;font-weight: bold;font-size: 14px" />  
+                        <p:spacer width="100%" height="1px"/>
+                        <h:outputText value="PARENT NOTE: " style="color: black;font-weight: bold;font-size: 14px" />  
+                        <p:scrollPanel style="width:100%;height:80px;background-color: #f5ebcb">  
+                            <h:outputText value="#{centerStudentsBean.selectedStudent.parentNote}" style="background-color: #f5ebcb"/>  
+                        </p:scrollPanel>
+
+                        <p:separator id="separator"/> 
+
+                        <h:outputLabel value="MANAGER COMMENT:" style="color: black;font-weight: bold;font-size: 14px" />
+                        <p:spacer width="100%" height="1px"/>
+                        <h:inputTextarea value="#{centerStudentsBean.selectedStudent.managerNote}" style="width: 100%;height: 100px"/>  
+
+                        <p:spacer width="100%" height="1px"/>
+
+                        <p:commandButton value="Update" oncomplete="cDialog.hide()" 
+                                         actionListener="#{centerStudentsBean.updateStudentComment()}" 
+                                         style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 5px"
+                                         update=":mainform" />  
+                        <p:commandButton value="Cancel" oncomplete="cDialog.hide()" 
+                                         style="font-size: 12px;background-color: orange;border-radius: 5px" />  
+                    </h:form>
+                </p:dialog>  
+
+
+                <div id="footer">Copyright © 2003 of Math Kangaroo in USA, NFP Inc. All Rights Reserved.</div>
+            </div>
+        </div>
+    </h:body>
+</html>
+
+

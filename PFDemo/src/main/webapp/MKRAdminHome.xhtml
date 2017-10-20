@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Math Kangaroo Admin Home</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="css/maincss.css" rel="stylesheet" type="text/css"/>        
+        <link rel="stylesheet" href="css/newcss.css" type="text/css"/>
+        <link rel="stylesheet" href="css/newcss1.css" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript">
+
+            window.onload = function()
+            {
+                var separator = " - ";
+                var dateTime = new Date();
+                var formattedDateTime = dateTime.toLocaleDateString();
+                var divObject = document.getElementById("dateTimeValue");
+                divObject.innerHTML = formattedDateTime;
+            };
+        </script>
+    </h:head>
+    <h:body>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{userLogin.isAdminLoggedIn}" />  
+        </f:metadata>
+        <div id="wrapper">
+            <ui:include src="main_header.html"/>
+            <div class="container">
+                <h:form id ="mainform" >
+                    <h:outputLabel styleClass="logotxt5" style="font-weight: normal;text-align: center;" value="Admin Home Page" />
+                    <p:panel rendered="#{userLogin.userLogged}" style="float:right;padding-right: 30px;border:none;">
+                        <h:outputLabel style="font-weight: normal;text-align: center;" value="Welcome, #{userLogin.user.userFirstName} #{userLogin.user.userLastName}!" />
+                        <p:spacer width="25px"/>
+                        <p:commandLink ajax="false" rendered="#{userLogin.userLogged}" action="MKRHome" >
+                            <h:outputText value="User Page" style="font-size: 12px;color:blue;" />
+                        </p:commandLink>
+                        <p:spacer width="25px"/>
+                        <p:commandLink ajax="false" rendered="#{userLogin.managerLogged}" action="MKRMgrHome" >
+                            <h:outputText value="Manager Page" style="font-size: 12px;color:blue;" />
+                        </p:commandLink>
+                        <p:spacer width="25px"/>
+                        <p:commandLink actionListener="#{userLogin.logOff()}" update="mainform" >
+                            <h:outputText value="Log off" style="font-size: 12px;color:blue;" />
+                        </p:commandLink>
+                    </p:panel>
+                    <p:panel style="width:80%;border:none;min-height: 400px;margin-top:100px">
+                        <h:panelGrid columns="2" columnClasses="column1,column2">
+                            <p:commandLink ajax="false" action="MKRAdminCenters" disabled="false">
+                                <h:outputText value="Manage Centers"
+                                              style="font-size: 16px;color:blue;" />
+                            </p:commandLink>
+                            <h:outputText style="font-family: verdana;font-size:14px;font-weight: lighter;color:black;" value="Manage existing centers." />
+                            <p:commandLink ajax="false" action="MKRAdminUsers" disabled="false">
+                                <h:outputText value="Manage Users"
+                                              style="font-size: 16px;color:blue;" />
+                            </p:commandLink>
+                            <h:outputText style="font-family: verdana;font-size:14px;font-weight: lighter;color:black;" value="Manage existing users." />
+                            <p:commandLink ajax="false" action="MKRAdminStudents" >
+                                <h:outputText value="Manage Students"
+                                              style="font-size: 16px;color:blue;" />
+                            </p:commandLink>
+                            <h:outputText style="font-family: verdana;font-size:14px;font-weight: lighter;color:black;" value="Manage students and registrations." />
+                            <p:commandLink ajax="false" action="MKRAdminNewCenterRequests" >
+                                <h:outputText value="Manage New Center Requests"
+                                              style="font-size: 16px;color:blue;" />
+                            </p:commandLink>
+                            <h:outputText style="font-family: verdana;font-size:14px;font-weight: lighter;color:black;" value="Review and approve new center requests." />
+                            <p:commandLink ajax="false" action="MKRAdminManagerRequests" >
+                                <h:outputText value="Manage Supporting Manager Requests"
+                                              style="font-size: 16px;color:blue;" />
+                            </p:commandLink>
+                            <h:outputText style="font-family: verdana;font-size:14px;font-weight: lighter;color:black;" value="Display all requests for supporting managers." />
+                            <p:commandLink ajax="false" action="MKRAdminCentersByState" >
+                                <h:outputText value="Centers By State Report"
+                                              style="font-size: 16px;color:blue;" />
+                            </p:commandLink>
+                            <h:outputText style="font-family: verdana;font-size:14px;font-weight: lighter;color:black;" value="Display/Download 'Centers by State' report." />
+                            <p:commandLink ajax="false" action="MKRAdminOtherTasks" >
+                                <h:outputText value="Other admin tasks"
+                                              style="font-size: 16px;color:blue;" />
+                            </p:commandLink>
+                            <h:outputText style="font-family: verdana;font-size:14px;font-weight: lighter;color:black;" value="Additional admin functions ( create student, etc. )" />
+                        </h:panelGrid>
+                    </p:panel>
+                </h:form>
+                <div id="footer">Copyright © 2003 of Math Kangaroo in USA, NFP Inc. All Rights Reserved.</div>
+            </div>
+        </div>
+    </h:body>
+</html>
+
+

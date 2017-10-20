@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Math Kangaroo Center Session Check-in</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="css/maincss.css" rel="stylesheet" type="text/css"/>        
+        <link rel="stylesheet" href="css/newcss1.css" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript">
+
+            window.onload = function()
+            {
+                var separator = " - ";
+                var dateTime = new Date();
+                var formattedDateTime = dateTime.toLocaleDateString();
+                var divObject = document.getElementById("dateTimeValue");
+                divObject.innerHTML = formattedDateTime;
+            };
+        </script>
+    </h:head>
+    <h:body>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{userLogin.isManagerLoggedIn}" />  
+        </f:metadata>
+        <div id="wrapper">
+            <ui:include src="main_header.html"/>
+            <div class="container">
+                <h:outputLabel styleClass="logotxt5" style="font-weight: normal;text-align: center;" value="Center Session Check-in" />
+                <p:panel rendered="#{userLogin.userLogged}" style="float:right;padding-right: 30px;border:none;">
+                    <h:outputLabel style="font-weight: normal;text-align: center;" value="Welcome, #{userLogin.user.userFirstName} #{userLogin.user.userLastName}!" />
+                </p:panel>
+                <h:form id="formCheckin">  
+                    <p:panel style="border:none;margin-top: 50px;min-height: 400px;">
+                        <h:outputLabel value="CENTER CODE: " style=""/>
+                        <h:outputLabel value="#{centerStudentsBean.selectedCenter.locationCode}" style="color: deeppink;font-size: 12px; font-weight: bold;"/>
+                        <p:spacer width="25px"/>
+                        <h:outputLabel value="SESSION: " style=""/>
+                        <h:outputLabel value="#{centerStudentsBean.selectedSession.sessionName}" style="color: deeppink;font-size: 12px; font-weight: bold;"/>
+                        <p:spacer width="100%" height="15px"/>
+                        <p:panel style="border:none">
+                            <p:commandButton ajax="false" style="font-size: 10px;background-color: orange;border-radius: 10px" 
+                                             value="Back" action="MKRMgrCheckinCenters"/> 
+                            <p:spacer height="20px" width="100%"/>
+                            <p:dataTable var="student" value="#{centerCheckinBean.studentDataModel}" rowKey="#{student.studentIdentificationCode}" paginator="true" rows="15"  
+                                         styleClass="registeredStudentsTableStyle"
+                                         filteredValue="#{centerCheckinBean.filteredStudents}" 
+                                         rowStyleClass="#{student.isChecked() ? 'rowChecked' : 'rowNotChecked'}" >  
+                                <f:facet name="header"  >  
+                                    <h:outputLabel styleClass="toptableheader" value="Students [ #{centerCheckinBean.studentDataModel.rowCount} ]" />   
+                                    <p:spacer width="50px" height="0px"/>
+                                    <h:outputLabel styleClass="toptableheader2" value="Checked in [ #{centerCheckinBean.getCheckedinCount()} ]" />   
+                                </f:facet>  
+                                <p:column headerText="Action" id="actionColumn" style="width: 30px;color:red">  
+                                    <p:commandButton value="Select" style="color: black;font-size: 10px" update=":studentDialogForm" oncomplete="studentDialog.show()">
+                                        <f:setPropertyActionListener target="#{centerCheckinBean.selectedStudent}" value="#{student}" />
+                                    </p:commandButton>
+                                </p:column>  
+                                <p:column headerText="First Name" sortBy="#{student.firstName}" filterBy="#{student.firstName}" id="firstName">  
+                                    #{student.firstName}  
+                                </p:column>  
+                                <p:column headerText="Last Name" sortBy="#{student.lastName}" filterBy="#{student.lastName}" id="lastName">  
+                                    #{student.lastName}  
+                                </p:column>  
+                                <p:column headerText="Student Code" sortBy="#{student.studentIdentificationCode}" filterBy="#{student.studentIdentificationCode}" id="studentIdentificationCode">  
+                                    #{student.studentIdentificationCode}  
+                                </p:column>  
+                                <p:column headerText="Level" sortBy="#{student.level}" filterBy="#{student.level}" id="level">  
+                                    #{student.level} 
+                                </p:column>  
+                            </p:dataTable> 
+                        </p:panel>
+                    </p:panel>
+                </h:form>
+
+                <p:dialog header="STUDENT CHECK IN" widgetVar="studentDialog" resizable="false" style="background-color: beige" 
+                          width="350" showEffect="clip" hideEffect="clip">  
+                    <h:form id="studentDialogForm" > 
+                            <h:outputText value="NAME: " style="color: black;font-weight: bold;font-size: 12px;" />  
+                            <h:outputText value="#{centerCheckinBean.selectedStudent.firstName} #{centerCheckinBean.selectedStudent.lastName}" style="color: deeppink;font-weight: bold;font-size: 12px;" />  
+                            <p:spacer height="0px" width="100%"/>
+                            <h:outputText value="ID: " style="color: black;font-weight: bold;font-size: 12px;" />  
+                            <h:outputText value="#{centerCheckinBean.selectedStudent.studentIdentificationCode}" style="color: deeppink;font-weight: bold;font-size: 12px;" />  
+                            <p:spacer height="0px" width="100%"/>
+                            <h:outputText value="LEVEL: " style="color: black;font-weight: bold;font-size: 12px;" />  
+                            <h:outputText value="#{centerCheckinBean.selectedStudent.level}" style="color: deeppink;font-weight: bold;font-size: 12px;" />  
+                            <p:spacer height="0px" width="100%"/>
+                            <h:outputText value="TSHIRT SIZE: " style="color: black;font-weight: bold;font-size: 12px;" />  
+                            <h:outputText value="#{centerCheckinBean.selectedStudent.tshirtSize}" style="color: deeppink;font-weight: bold;font-size: 12px;" />  
+                            <p:spacer height="0px" width="100%"/>
+                            <h:outputText value="PARENT NOTE: " style="color: black;font-weight: bold;font-size: 12px;" />  
+                            <p:scrollPanel style="width:100%;height:80px;background-color: beige">  
+                                <h:outputText value="#{centerCheckinBean.selectedStudent.parentNote}" style="background-color: beige" />  
+                            </p:scrollPanel>
+                        <p:separator/> 
+                        <h:outputText value="PHOTO RESTRICTION: " style="color: black;font-weight: bold;font-size: 12px" />  
+                        <p:selectBooleanCheckbox value="#{centerCheckinBean.selectedStudent.photoRestricted}" />  
+                        <p:spacer width="100%" height="1px"/>
+                        <h:outputLabel value="MANAGER COMMENT:" style="color: black;font-weight: bold;font-size: 12px"/>
+                        <p:spacer width="100%" height="1px"/>
+                        <h:inputTextarea value="#{centerCheckinBean.selectedStudent.managerNote}" style="width: 100%;height: 100px"/>  
+                        <p:spacer width="100%" height="1px"/>
+                        <p:commandButton value="#{centerCheckinBean.selectedStudent.checked ? 'Update' : 'Check in'}" oncomplete="studentDialog.hide()" 
+                                         style="font-size: 10px;background-color: orange;border-radius: 10px;margin-right: 10px"
+                                         actionListener="#{centerCheckinBean.checkinStudent}" styleClass="ui-priority-primary" update=":formCheckin" />  
+                        <p:commandButton value="UnCheck" rendered="#{centerCheckinBean.selectedStudent.checked}" oncomplete="studentDialog.hide()"
+                                         style="font-size: 10px;background-color: orange;border-radius: 10px;margin-right: 10px"
+                                         actionListener="#{centerCheckinBean.uncheckStudent}" update=":formCheckin" />  
+                        <p:commandButton value="Cancel" oncomplete="studentDialog.hide()" styleClass="ui-priority-primary"
+                                         style="font-size: 10px;background-color: orange;border-radius: 10px" />  
+                    </h:form>
+                </p:dialog>  
+
+                <div id="footer">Copyright © 2003 of Math Kangaroo in USA, NFP Inc. All Rights Reserved.</div>
+            </div>
+        </div>
+    </h:body>
+</html>
+
+

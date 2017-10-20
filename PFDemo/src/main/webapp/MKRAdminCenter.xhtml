@@ -1,0 +1,338 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Math Kangaroo Admin Center Details</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="css/maincss.css" rel="stylesheet" type="text/css"/>        
+        <link rel="stylesheet" href="css/newcss.css" type="text/css"/>
+        <link rel="stylesheet" href="css/newcss1.css" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript">
+
+            window.onload = function()
+            {
+                var separator = " - ";
+                var dateTime = new Date();
+                var formattedDateTime = dateTime.toLocaleDateString();
+                var divObject = document.getElementById("dateTimeValue");
+                divObject.innerHTML = formattedDateTime;
+            };
+        </script>
+    </h:head>
+    <h:body>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{userLogin.isAdminLoggedIn}" />  
+        </f:metadata>
+        <div id="wrapper">
+            <ui:include src="main_header.html"/>
+            <div class="container">
+                <h:outputLabel styleClass="logotxt5" style="font-weight: normal;text-align: center;" value="Admin - Center Details" />
+                <p:panel rendered="#{userLogin.adminLogged}" style="float:right;padding-right: 30px;border:none;">
+                    <h:outputLabel style="font-weight: normal;text-align: center;" value="Welcome, #{userLogin.user.userFirstName} #{userLogin.user.userLastName}!" />
+                </p:panel>
+                <h:form id ="mainform" >
+                    <p:panel style="border:none;margin-top: 50px;min-height: 400px;">
+                        <h:outputLabel value="CENTER CODE: " style=""/>
+                        <h:outputLabel value="#{centerDetailsBean.selectedCenter.locationCode}" style="color: deeppink;font-size: 14px; font-weight: bold;"/>
+                        <p:spacer width="100%" height="10px"/>
+                        <p:panelGrid columns="2" styleClass="topAlignmentClass">
+                            <h:panelGrid id="centerDetailPanel" style="width: 60%;border:none" columns="2" columnClasses="column1,column2">
+                                <h:outputLabel value="Name: *" />  
+                                <p:inputText value="#{centerDetailsBean.selectedCenter.locationName}"
+                                             size="50"
+                                             disabled="true"
+                                             />  
+                                <h:outputLabel value="Address1: *" />  
+                                <p:inputText value="#{centerDetailsBean.selectedCenter.locationAddress1}" 
+                                             disabled="true"
+                                             />  
+                                <h:outputLabel value="Address2: *" />  
+                                <p:inputText value="#{centerDetailsBean.selectedCenter.locationAddress2}" 
+                                             disabled="true"
+                                             />  
+                                <h:outputLabel value="City: *" />  
+                                <p:inputText value="#{centerDetailsBean.selectedCenter.locationCity}" 
+                                             disabled="true"
+                                             />  
+                                <h:outputLabel value="State: *" />  
+                                <p:inputText value="#{centerDetailsBean.selectedCenter.locationState}" 
+                                             disabled="true"
+                                             />  
+                                <h:outputLabel value="Zip code: *" />  
+                                <p:inputText value="#{centerDetailsBean.selectedCenter.locationZipcode}" 
+                                             disabled="true"
+                                             />  
+                                <h:outputLabel value="Private Session Access Code: " />  
+                                <h:outputLabel value="#{centerDetailsBean.selectedCenter.locationRegistrationCode}" 
+                                               style="color: blue;font-weight: bold"
+                                               title="Access code is used to add center private sessions to the center selection on the registration page." />  
+                                <h:outputLabel value="Confirmation Status:" />  
+                                <h:outputLabel value="#{adminCentersBean.confirmCenterText()}" />
+                                <h:outputLabel value="Active Status:" />  
+                                <h:selectOneMenu value="#{centerDetailsBean.selectedCenter.active}" styleClass="standardSelectOneMenu">
+                                    <f:selectItem itemLabel="ACTIVE" itemValue="Y" />
+                                    <f:selectItem itemLabel="INACTIVE" itemValue="N" />
+                                    <p:ajax update="updateButton" />
+                                </h:selectOneMenu>
+                                <f:facet name="footer"> 
+                                    <p:messages closable="true"/>
+                                    <p:panelGrid columns="2" columnClasses="column1,column2" styleClass="loginPanelStyle">
+                                        <p:commandButton id="updateButton"
+                                                         style="font-size: 12px;background-color: orange;margin-right: 5px;border-radius: 5px" 
+                                                         value="Update" 
+                                                         action="#{centerDetailsBean.updateCenterStatus}"
+                                                         update=":mainform centerDetailPanel"
+                                                         disabled="#{centerDetailsBean.updateCenterReady()}"
+                                                         />
+                                        <p:commandButton ajax="false" style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 5px" 
+                                                         value="Back" action="#{centerDetailsBean.getAdminReturnPage()}"/> 
+                                    </p:panelGrid>
+                                </f:facet>  
+                            </h:panelGrid>
+                            <p:panel styleClass="generalPanelStyle">
+                                <p:panelGrid columns="1" style="border: none;vertical-align: top">
+                                    <p:panel styleClass="generalPanelStyle">
+                                        <p:commandLink ajax="false" action="MKRAdminCenterSessions"  >
+                                            <h:outputText style="color: blue;font-size: 12px" 
+                                                          title="Click to go to center sessions"
+                                                          value="Center Sessions" />
+                                        </p:commandLink>
+                                        <p:spacer width="20px"/>
+                                        <h:outputLabel value="#{centerDetailsBean.selectedCenter.locationCapacityAsString}"
+                                                       style="font-size: 11px;" />
+                                    </p:panel>
+                                </p:panelGrid>
+
+                                <p:panel styleClass="generalPanelGridStyle">
+                                    <h:outputText style="font-size: 14px;font-weight: bold" value="Center Managers"/>
+                                </p:panel>
+                                <p:dataTable id="managersTable" styleClass="registeredStudentsTableStyle" var="manager" value="#{centerDetailsBean.centerManagers}" 
+                                             emptyMessage="This center has no managers."> 
+                                    <p:column headerText="Action" >  
+                                        <p:menuButton value="Options" styleClass="actionButton">
+                                            <p:menuitem value="View" style="font-size:12px"
+                                                        update=":managerViewForm"  
+                                                        oncomplete="dlgManagerView.show();" >
+                                                <f:setPropertyActionListener value="#{manager}" target="#{centerDetailsBean.managerToUpdate}" /> 
+                                            </p:menuitem>
+                                            <p:menuitem rendered="#{!manager.primaryManager}" value="Make primary" style="font-size:12px"
+                                                        update=":primaryManagerForm"  
+                                                        oncomplete="dlgPrimaryManager.show();" >
+                                                <f:setPropertyActionListener value="#{manager}" target="#{centerDetailsBean.managerToUpdate}" />  
+                                            </p:menuitem>
+                                            <p:menuitem rendered="#{!manager.primaryManager}" value="Remove" style="font-size:12px"
+                                                        update=":deleteManagerForm"  
+                                                        oncomplete="dlgDeleteManager.show();" >
+                                                <f:setPropertyActionListener value="#{manager}" target="#{centerDetailsBean.managerToDelete}" />  
+                                            </p:menuitem>
+                                        </p:menuButton>
+                                    </p:column>  
+                                    <p:column headerText="Mgr ID" sortBy="#{manager.leaderID}">  
+                                        <p:graphicImage rendered="#{manager.primaryManager}" value="images/primaryMgr.png" 
+                                                        title="Center Primary Manager"/>
+                                        <p:spacer height="0px" width="3px"/>
+                                        <h:outputText value="#{manager.leaderID}" />  
+                                    </p:column>  
+                                    <p:column headerText="First" sortBy="#{manager.firstName}">  
+                                        <h:outputText value="#{manager.firstName}" />  
+                                    </p:column>  
+                                    <p:column headerText="Last" sortBy="#{manager.lastName}">  
+                                        <h:outputText value="#{manager.lastName}" />  
+                                    </p:column>  
+                                </p:dataTable>
+
+                                <p:panel styleClass="generalPanelGridStyle">
+                                    <h:outputText style="font-size: 14px;font-weight: normal" value="Requests for Supporting Manager"/>
+                                </p:panel>
+                                <p:dataTable id="requestsTable" styleClass="currentStudentsTableStyle" var="rmanager" value="#{centerDetailsBean.managerRequests}" 
+                                             emptyMessage="This center has no manager requests."> 
+                                    <p:column headerText="Action">
+                                        <p:menuButton value="Options" styleClass="actionButton">
+                                            <p:menuitem value="View request" style="font-size:12px"
+                                                        update=":requestViewForm"
+                                                        actionListener="#{centerDetailsBean.setManagerRequest(rmanager)}"
+                                                        oncomplete="dlgRequestView.show();" >
+                                            </p:menuitem>
+                                            <p:menuitem value="Approve" style="font-size:12px"
+                                                        update=":approveManagerForm"
+                                                        actionListener="#{centerDetailsBean.setManagerRequest(rmanager)}"
+                                                        oncomplete="dlgApproveManager.show();" >
+                                            </p:menuitem>
+                                            <p:menuitem value="Reject" style="font-size:12px"
+                                                        update=":rejectManagerForm"  
+                                                        actionListener="#{centerDetailsBean.setManagerRequest(rmanager)}"
+                                                        oncomplete="dlgRejectManager.show();" >
+                                            </p:menuitem>
+                                        </p:menuButton>
+                                    </p:column>
+                                    <p:column headerText="User ID" sortBy="#{rmanager.user.userID}">  
+                                        <h:outputText value="#{rmanager.user.userID}" />  
+                                    </p:column>  
+                                    <p:column headerText="First" sortBy="#{rmanager.user.userFirstName}">  
+                                        <h:outputText value="#{rmanager.user.userFirstName}" />  
+                                    </p:column>  
+                                    <p:column headerText="Last" sortBy="#{rmanager.user.userLastName}">  
+                                        <h:outputText value="#{rmanager.user.userLastName}" />  
+                                    </p:column>  
+                                    <p:column headerText="Status" >  
+                                        <h:outputText value="#{rmanager.status}" />  
+                                    </p:column>  
+                                </p:dataTable>
+                            </p:panel>
+                        </p:panelGrid>
+                    </p:panel>
+                </h:form>
+
+                <p:dialog id="dialogMessage" widgetVar="dlgMessage" modal="true" header="MESSAGE" width="450px" >
+                    <h:form id="dlgMessageForm">
+                        <p:panel styleClass="centeredItemsPanel" >
+                            <p:panelGrid columns="1" style="border: none;text-align: center">
+                                <h:outputLabel value="#{centerDetailsBean.dialogMessageText}"/>
+                                <p:commandButton value="OK" oncomplete="dlgMessage.hide()" 
+                                                 styleClass="ui-priority-primary" 
+                                                 style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" /> 
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dialogConfirmDelete" widgetVar="dlgDeleteManager" modal="true" header="CONFIRMATION:">
+                    <h:form id="deleteManagerForm">
+                        <p:panel id="deleteManagerPanel" styleClass="centeredItemsPanel" >
+                            <p:panelGrid columns="1" style="border: none;">
+                                <h:outputLabel value="Remove #{centerDetailsBean.managerToDelete.firstName} #{centerDetailsBean.managerToDelete.lastName} [ID:#{centerDetailsBean.managerToDelete.leaderID}] ?"/>
+                                <h:panelGroup>
+                                    <p:commandButton value="Yes" oncomplete="dlgDeleteManager.hide()" 
+                                                     actionListener="#{centerDetailsBean.deleteManager()}" styleClass="ui-priority-primary" update=":mainform:managersTable :dlgMessageForm" 
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px"/> 
+                                    <p:spacer width="10px"/>
+                                    <p:commandButton value="No" oncomplete="dlgDeleteManager.hide()" 
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px"/>
+                                </h:panelGroup>
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dialogConfirmPrimary" widgetVar="dlgPrimaryManager" modal="true" header="CONFIRMATION:">
+                    <h:form id="primaryManagerForm">
+                        <p:panel id="primaryManagerPanel" styleClass="centeredItemsPanel" >
+                            <p:panelGrid columns="1" style="border: none;">
+                                <h:outputLabel value="Set #{centerDetailsBean.managerToUpdate.firstName} #{centerDetailsBean.managerToUpdate.lastName} [ID:#{centerDetailsBean.managerToUpdate.leaderID}] as primary manager?"/>
+                                <h:panelGroup>
+                                    <p:commandButton value="Yes" oncomplete="dlgPrimaryManager.hide()" 
+                                                     actionListener="#{centerDetailsBean.setPrimaryManager()}" styleClass="ui-priority-primary" update=":mainform:managersTable :dlgMessageForm" 
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px"/> 
+                                    <p:spacer width="10px"/>
+                                    <p:commandButton value="No" oncomplete="dlgPrimaryManager.hide()" 
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px"/>
+                                </h:panelGroup>
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dialogApprove" widgetVar="dlgApproveManager" modal="true" header="CONFIRMATION:">
+                    <h:form id="approveManagerForm">
+                        <p:panel id="approveManagerPanel" styleClass="centeredItemsPanel" >
+                            <p:panelGrid columns="1" style="border: none;">
+                                <h:outputLabel value="Approve #{centerDetailsBean.managerRequest.user.userFirstName} #{centerDetailsBean.managerRequest.user.userLastName} [ID:#{centerDetailsBean.managerRequest.user.userID}] as a supporting manager?"/>
+                                <h:panelGroup>
+                                    <p:commandButton value="Yes" oncomplete="dlgApproveManager.hide()" 
+                                                     actionListener="#{centerDetailsBean.approveManager()}" styleClass="ui-priority-primary" update=":mainform:managersTable :mainform:requestsTable :dlgMessageForm" 
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px"/> 
+                                    <p:spacer width="10px"/>
+                                    <p:commandButton value="No" oncomplete="dlgApproveManager.hide()" 
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px"/>
+                                </h:panelGroup>
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dialogReject" widgetVar="dlgRejectManager" modal="true" header="CONFIRMATION:">
+                    <h:form id="rejectManagerForm">
+                        <p:panel id="rejectManagerPanel" styleClass="centeredItemsPanel" >
+                            <p:panelGrid columns="1" style="border: none;">
+                                <h:outputLabel value="Reject #{centerDetailsBean.managerRequest.user.userFirstName} #{centerDetailsBean.managerRequest.user.userLastName} [ID:#{centerDetailsBean.managerRequest.user.userID}] as a supporting manager?"/>
+                                <h:outputLabel value="Reject Comment:"/>
+                                <p:inputTextarea rows="3" cols="20" value="#{centerDetailsBean.managerRequestComment}" style="width: 150px;height: 50px" />
+                                <h:panelGroup>
+                                    <p:commandButton value="Yes" oncomplete="dlgRejectManager.hide()" 
+                                                     actionListener="#{centerDetailsBean.rejectManager()}" styleClass="ui-priority-primary" update=":mainform:managersTable :mainform:requestsTable :dlgMessageForm" 
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px"/> 
+                                    <p:spacer width="10px"/>
+                                    <p:commandButton value="No" oncomplete="dlgRejectManager.hide()" 
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px"/>
+                                </h:panelGroup>
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dialogRequestView" widgetVar="dlgRequestView" modal="true" header="REQUEST DETAILS:">
+                    <h:form id="requestViewForm">
+                        <p:panel styleClass="centeredItemsPanel" >
+                            <p:panelGrid columns="2" columnClasses="column1,column2">
+                                <h:outputLabel value="Requestor Manager:"/>
+                                <h:outputLabel value="#{centerDetailsBean.managerRequest.requestorManager.firstName} #{centerDetailsBean.managerRequest.requestorManager.lastName} [#{centerDetailsBean.managerRequest.requestorManager.leaderID}]"/>
+                                <h:outputLabel value="Date Requested:"/>
+                                <h:outputLabel value="#{centerDetailsBean.managerRequest.requestDate}"/>
+                                <h:outputLabel value="Requested For:"/>
+                                <h:outputLabel value="#{centerDetailsBean.managerRequest.user.userFirstName} #{centerDetailsBean.managerRequest.user.userLastName} [#{centerDetailsBean.managerRequest.user.userID}]"/>
+                                <h:outputLabel value="Request Comment:"/>
+                                <h:inputTextarea value="#{centerDetailsBean.managerRequest.comment}" disabled="true" rows="10" style="width: 250px;height: 100px"/>
+                                <h:panelGroup>
+                                    <p:commandButton value="Close" oncomplete="dlgRequestView.hide()"
+                                                     styleClass="ui-priority-primary"  
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px"/> 
+                                </h:panelGroup>
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dialogManagerView" widgetVar="dlgManagerView" modal="true" header="MANAGER DATA:">
+                    <h:form id="managerViewForm">
+                        <p:panel styleClass="centeredItemsPanel" >
+                            <p:panelGrid columns="2" columnClasses="column1,column2">
+                                <h:outputLabel value="First Name:" />  
+                                <h:outputLabel value="#{centerDetailsBean.managerToUpdate.firstName}"/>  
+                                <h:outputLabel value="Last Name:" />  
+                                <h:outputLabel value="#{centerDetailsBean.managerToUpdate.lastName}"/>  
+                                <h:outputLabel value="Email:" />  
+                                <h:outputLabel value="#{centerDetailsBean.managerToUpdate.email}"/>  
+                                <h:outputLabel value="Phone:" />  
+                                <h:outputLabel value="#{centerDetailsBean.managerToUpdate.phoneCell}"/>  
+                                <h:outputLabel value="Address:" />  
+                                <h:outputLabel value="#{centerDetailsBean.managerToUpdate.address1}"/>  
+                                <h:outputLabel value="City:" />  
+                                <h:outputLabel value="#{centerDetailsBean.managerToUpdate.city}"/>  
+                                <h:outputLabel value="State:" />  
+                                <h:outputLabel value="#{centerDetailsBean.managerToUpdate.state}" />
+                                <h:outputLabel value="Zipcode:" />  
+                                <h:outputLabel value="#{centerDetailsBean.managerToUpdate.zipcode}"/>  
+                                <h:panelGroup>
+                                    <p:commandButton value="Close" oncomplete="dlgManagerView.hide()"
+                                                     styleClass="ui-priority-primary"  
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px"/> 
+                                </h:panelGroup>
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <div id="footer">Copyright © 2003 of Math Kangaroo in USA, NFP Inc. All Rights Reserved.</div>
+            </div>
+        </div>
+    </h:body>
+</html>
+
+

@@ -1,0 +1,297 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Manage Students</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="css/maincss.css" rel="stylesheet" type="text/css"/>        
+        <link rel="stylesheet" href="css/newcss.css" type="text/css"/>
+        <link rel="stylesheet" href="css/newcss1.css" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript">
+
+            window.onload = function()
+            {
+                var separator = " - ";
+                var dateTime = new Date();
+                var formattedDateTime = dateTime.toLocaleDateString();
+                var divObject = document.getElementById("dateTimeValue");
+                divObject.innerHTML = formattedDateTime;
+            }
+        </script>
+    </h:head>
+    <h:body>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{userLogin.isUserLoggedIn}" />  
+        </f:metadata>
+        <div id="wrapper">
+            <ui:include src="main_header.html"/>
+            <div class="container">
+                <p:panel style="border:none;margin-bottom: 20px">
+                    <h:outputLabel styleClass="logotxt5" style="font-weight: normal;text-align: center;" value="Manage Students" />
+                    <p:panel rendered="#{userLogin.userLogged}" style="float:right;padding-right: 30px;border:none;">
+                        <h:outputLabel style="font-weight: normal;text-align: center;" value="Welcome, #{userLogin.user.userFirstName} #{userLogin.user.userLastName}!" />
+                    </p:panel>
+                </p:panel>
+                <h:form id="mainform">
+                    <p:panelGrid columns="1" style="min-height: 400px" >
+                        <p:panel styleClass="generalPanelGridStyle">
+                            <p:panel styleClass="generalPanelGridStyle">
+                                <h:outputText style="font-size: 16px;font-weight: bold" value="My Students"/>
+                            </p:panel>
+                            <p:dataTable styleClass="currentStudentsTableStyle" var="regStudent" value="#{userStudentBean.myStudents}" 
+                                         paginator="true" rows="10"
+                                         style="margin-top: 5px;margin-left: 20px;margin-right: 20px"
+                                         emptyMessage="You have no students.">  
+                                <p:column headerText="Student ID" sortBy="#{regStudent.studentIdentificationCode}" >  
+                                    <p:commandLink update=":formUpdateStudent"  
+                                                   oncomplete="dlgUpdateStudent.show();"
+                                                   actionListener="#{userStudentBean.selectToUpdate(regStudent)}"
+                                                   title="Update this student data">
+                                        <p:graphicImage value="images/update.png" width="20px" height="20px"/>
+                                    </p:commandLink>
+                                    <p:spacer width="5px"/>
+                                    <p:commandLink  disabled="#{regStudent.status == 2}"
+                                                    update=":deleteStudentForm"
+                                                    oncomplete="dlgDeleteStudent.show();"
+                                                    actionListener="#{userStudentBean.setStudentToDelete(regStudent)}"
+                                                    title="Delete this student">
+                                        <p:graphicImage value="images/delete.jpg" width="15px" height="15px"/>
+                                    </p:commandLink>
+                                    <p:spacer width="15px"/>
+                                    <p:commandLink update=":formShowResults"  
+                                                   oncomplete="dlgShowResults.show();"
+                                                   actionListener="#{userStudentBean.generateStudentResults(regStudent)}"
+                                                   title="Show this student's results">
+                                        <p:graphicImage value="images/ranking.png" width="20px" height="20px"/>
+                                    </p:commandLink>
+                                    <p:spacer width="30px"/>
+                                    <h:outputText style="font-size: 12px" 
+                                                  value="#{regStudent.studentIdentificationCode}" />
+                                </p:column>  
+                                <p:column headerText="First" sortBy="#{regStudent.firstName}">  
+                                    <h:outputText value="#{regStudent.firstName}" />  
+                                </p:column>  
+                                <p:column headerText="Last" sortBy="#{regStudent.lastName}">  
+                                    <h:outputText value="#{regStudent.lastName}" />  
+                                </p:column>  
+                                <p:column headerText="Status" sortBy="#{regStudent.status}">  
+                                    <p:commandLink rendered="#{regStudent.status == 2}" update=":showRegDataForm" title="Display registration data" 
+                                                   oncomplete="dlgShowRegData.show();" 
+                                                   actionListener="#{userStudentBean.getCenterInfo(regStudent)}" >
+                                        <p:graphicImage value="images/info.png" />
+                                        <f:setPropertyActionListener value="#{regStudent}" target="#{userStudentBean.selectedStudent}" />  
+                                    </p:commandLink>
+                                    <p:spacer width="5px"/>
+                                    <p:commandLink rendered="#{regStudent.status == 2}" update=":dlgMessageForm" title="Resend a registration email for this student" 
+                                                   actionListener="#{userStudentBean.resendRegistrationEmail(regStudent)}"
+                                                   disabled="true">
+                                        <p:graphicImage value="images/send-email.png" />
+                                    </p:commandLink>
+                                    <p:spacer width="5px"/>
+                                    <h:outputText value="#{userLogin.commonData.getRegistrationStatusCodeName(regStudent.status)}" />  
+                                </p:column>  
+                            </p:dataTable>
+                        </p:panel>
+                        <p:panel styleClass="generalPanelGridStyle">
+                            <p:commandButton value="Exit" style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" action="MKRHome"/>
+                        </p:panel>
+                    </p:panelGrid>
+                </h:form>
+
+                <p:dialog id="dialogUpdateStudent" widgetVar="dlgUpdateStudent" modal="true" header="Update Student Data">
+                    <h:form id="formUpdateStudent">
+                        <p:panel>
+                            <p:panelGrid columns="2" columnClasses="column1,column2" styleClass="generalPanelStyle2">
+                                <h:outputLabel value="First Name:" />  
+                                <p:inputText value="#{userStudentBean.studentToUpdate.firstName}" label="First Name" maxlength="30">  
+                                </p:inputText>  
+                                <h:outputLabel value="Middle Initial:" />  
+                                <p:inputText maxlength="1" value="#{userStudentBean.studentToUpdate.middleName}" label="Middle Initial" style="width: 20px">  
+                                </p:inputText>  
+                                <h:outputLabel value="Last Name:" />  
+                                <p:inputText value="#{userStudentBean.studentToUpdate.lastName}" label="Last Name" maxlength="30">  
+                                </p:inputText>  
+                                <h:outputLabel value="Gender:" />  
+                                <h:selectOneMenu styleClass="generalPanelSelectOneMenu" value="#{userStudentBean.studentToUpdate.genderCode}" label="#{userStudentBean.studentToUpdate.gender}" >
+                                    <f:selectItems value="#{userLogin.commonData.genders}" var="gender" itemLabel="#{gender.codeAlpha}" itemValue="#{gender.code}" />
+                                </h:selectOneMenu>
+                                <h:outputLabel value="Parent/Guardian E-mail:" />  
+                                <p:inputText value="#{userStudentBean.studentToUpdate.parentGuardianEmail}" label="Parent E-mail" disabled="true">  
+                                </p:inputText>  
+                                <h:outputLabel value="Student E-mail:" />  
+                                <p:inputText value="#{userStudentBean.studentToUpdate.studentEmail}" label="Student E-mail" maxlength="50">  
+                                </p:inputText>  
+                                <h:outputLabel value="Address:" />  
+                                <p:inputText value="#{userStudentBean.studentToUpdate.address1}" label="Address" maxlength="50">  
+                                </p:inputText>  
+                                <h:outputLabel value="City:" />  
+                                <p:inputText value="#{userStudentBean.studentToUpdate.city}" label="City" maxlength="50">  
+                                </p:inputText>  
+                                <h:outputLabel value="State:" />  
+                                <h:selectOneMenu styleClass="generalPanelSelectOneMenu" value="#{userStudentBean.studentToUpdate.state}" label="#{userStudentBean.studentToUpdate.stateName}" >
+                                    <f:selectItems value="#{userLogin.commonData.states}" var="state" itemLabel="#{state.description}" itemValue="#{state.codeAlpha}" />
+                                </h:selectOneMenu>
+                                <h:outputLabel value="Zip code:" />  
+                                <p:inputMask mask="99999" value="#{userStudentBean.studentToUpdate.zipcode}" label="Zip code" style="width: 50px"/>  
+                                <h:outputLabel value="School Name:" />  
+                                <p:inputText value="#{userStudentBean.studentToUpdate.schoolName}" label="School Name" maxlength="50">  
+                                </p:inputText>  
+                                <h:outputLabel value="Teacher's First Name:" />  
+                                <p:inputText value="#{userStudentBean.studentToUpdate.teacherFirstName}" label="First Name" maxlength="30" >  
+                                </p:inputText>  
+                                <h:outputLabel value="Teacher's Last Name:" />  
+                                <p:inputText value="#{userStudentBean.studentToUpdate.teacherLastName}" label="Last Name" maxlength="30">  
+                                </p:inputText>  
+                                <h:outputLabel value="Teacher's Email:" />  
+                                <p:inputText value="#{userStudentBean.studentToUpdate.teacherEmail}" label="Teacher's Email" >  
+                                </p:inputText>  
+                            </p:panelGrid>
+                            <p:commandButton value="Update" oncomplete="dlgUpdateStudent.hide()" update=":mainform :dlgMessageForm"
+                                             action="#{userStudentBean.updateStudentData()}" styleClass="ui-priority-primary" 
+                                             style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" /> 
+                            <p:commandButton value="Cancel" oncomplete="dlgUpdateStudent.hide()" 
+                                             style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" />
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dialogShowResults" widgetVar="dlgShowResults" modal="true" header="Student Results">
+                    <h:form id="formShowResults">
+                        <p:dataTable styleClass="studentResultsPanel" var="stResult" value="#{userStudentBean.studentResults}" 
+                                     emptyMessage="No results found." > 
+                            <f:facet name="header"  >  
+                                <h:outputLabel style="color: black;font-weight: bold;font-size: 12px" value="Student: #{userStudentBean.selectedStudent.firstName} #{userStudentBean.selectedStudent.lastName}" />   
+                            </f:facet>  
+                            <p:column headerText="Year">  
+                                <h:outputText value="#{stResult.year}" />  
+                            </p:column>  
+                            <p:column headerText="Level">  
+                                <h:outputText value="#{stResult.level}" />  
+                            </p:column>  
+                            <p:column headerText="Competition Center">  
+                                <h:outputText value="#{stResult.locationName}" />  
+                            </p:column>  
+                            <p:column headerText="City / State">  
+                                <h:outputText value="#{stResult.locationCity} / #{stResult.locationState}" />  
+                            </p:column>  
+                            <p:column headerText="Score">  
+                                <h:outputText value="#{stResult.score}" />  
+                            </p:column>  
+                            <p:column headerText="PCT">  
+                                <h:outputText value="#{stResult.percentage}" />  
+                            </p:column>  
+                            <p:column headerText="Nation Place">  
+                                <h:outputText value="#{stResult.nationPlace}" />  
+                            </p:column>  
+                            <p:column headerText="Nation Percentile">  
+                                <h:outputText value="#{stResult.nationPercentile}" />  
+                            </p:column>  
+                            <p:column headerText="State Place">  
+                                <h:outputText value="#{stResult.showStatePlace()}" />  
+                            </p:column>  
+                            <p:column headerText="State Percentile">  
+                                <h:outputText value="#{stResult.statePercentile}" />  
+                            </p:column>  
+                        </p:dataTable>
+                        <p:commandButton value="Close" oncomplete="dlgShowResults.hide()" 
+                                         styleClass="ui-priority-primary" 
+                                         style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" /> 
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dialogShowRegData" widgetVar="dlgShowRegData" modal="true" header="Student Registration Info">
+                    <h:form id="showRegDataForm">
+                                <p:panelGrid columns="1">
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Center:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{userStudentBean.selectedStudent.locationNameCityState}"/>  
+                                    </p:panelGrid>
+                                </p:panelGrid>
+                                <p:panelGrid columns="2">
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Center Code:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{userStudentBean.selectedStudent.locationCode}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Session:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{userStudentBean.selectedStudent.sessionName}"/>  
+                                    </p:panelGrid>
+                                </p:panelGrid>
+                                <p:panelGrid columns="5">
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <p:outputLabel styleClass="adminFieldSetLabel" value="Status:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{userLogin.commonData.getRegistrationStatusCodeName(userStudentBean.selectedStudent.status)}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Reg Date:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{userStudentBean.selectedStudent.dateTime}" />  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Level:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{userStudentBean.selectedStudent.level}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="T-shirt Size:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{userStudentBean.selectedStudent.tshirtSize}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Contact Phone:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{userStudentBean.selectedStudent.contactPhone1}"/>  
+                                    </p:panelGrid>
+                                </p:panelGrid>
+                                <p:panelGrid columns="1">
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Parent note:" />  
+                                        <h:inputTextarea style="font-size: 10px;font-weight: normal;width: 100%;height: 50px" value="#{userStudentBean.selectedStudent.parentNote}" disabled="true"/>  
+                                    </p:panelGrid>
+                                </p:panelGrid>
+                        <p:commandButton value="Close" oncomplete="dlgShowRegData.hide()" 
+                                         styleClass="ui-priority-primary" 
+                                         style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" /> 
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dialogConfirmDelete" widgetVar="dlgDeleteStudent" modal="true" header="Confirmation">
+                    <h:form id="deleteStudentForm">
+                        <p:panel id="deleteStudentPanel" styleClass="centeredItemsPanel" >
+                            <p:panelGrid columns="1" style="border: none;">
+                                <h:outputLabel value="Remove #{userStudentBean.studentToDelete.firstName} #{userStudentBean.studentToDelete.lastName} [#{userStudentBean.studentToDelete.studentIdentificationCode}] ?"/>
+                                <h:panelGroup>
+                                    <p:commandButton value="Yes" oncomplete="dlgDeleteStudent.hide()" 
+                                                     actionListener="#{userStudentBean.deleteStudent()}" styleClass="ui-priority-primary" update=":mainform :dlgMessageForm" 
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px"/> 
+                                    <p:spacer width="10px"/>
+                                    <p:commandButton value="No" oncomplete="dlgDeleteStudent.hide()" 
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px"/>
+                                </h:panelGroup>
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dialogMessage" widgetVar="dlgMessage" modal="true" header="Message" width="450px" >
+                    <h:form id="dlgMessageForm">
+                        <p:panel styleClass="centeredItemsPanel" >
+                            <p:panelGrid columns="1" style="border: none;text-align: center">
+                                <h:outputLabel value="#{userStudentBean.dialogMessageText}"/>
+                                <p:commandButton value="OK" oncomplete="dlgMessage.hide()" 
+                                                 styleClass="ui-priority-primary" 
+                                                 style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" /> 
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+            </div>
+            <div id="footer">Copyright © 2003 of Math Kangaroo in USA, NFP Inc. All Rights Reserved.</div>
+        </div>
+    </h:body>
+</html>
+

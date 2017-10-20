@@ -1,0 +1,43 @@
+/* 
+    Document   : maincss
+    Created on : Apr 16, 2013, 10:43:27 PM
+    Author     : irek
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+
+
+h1 {
+    color: red;
+    font-weight: bold;
+    font-family: verdana;
+}
+.ui-panelgrid td
+{
+    border: none;   
+    border-style: none;
+    border-width: 0px;
+    font-weight: bold;
+    font-family: verdana;
+    font-size: 12px;
+}
+
+.ui-panelgrid
+{
+    border-collapse: inherit;
+}
+
+.ui-growl {
+    top:0%;
+    left:0%;
+}
+
+.dialogForm {
+    font-weight: normal;
+    font-size: 12px;
+    font-family: verdana;
+}

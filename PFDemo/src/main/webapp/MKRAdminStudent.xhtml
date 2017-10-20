@@ -1,0 +1,636 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Math Kangaroo Admin Student Details</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="css/maincss.css" rel="stylesheet" type="text/css"/>        
+        <link rel="stylesheet" href="css/newcss.css" type="text/css"/>
+        <link rel="stylesheet" href="css/newcss1.css" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript">
+
+            window.onload = function()
+            {
+                var separator = " - ";
+                var dateTime = new Date();
+                var formattedDateTime = dateTime.toLocaleDateString();
+                var divObject = document.getElementById("dateTimeValue");
+                divObject.innerHTML = formattedDateTime;
+            };
+        </script>
+    </h:head>
+    <h:body>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{userLogin.isAdminLoggedIn}" />  
+        </f:metadata>
+        <div id="wrapper">
+            <ui:include src="main_header.html"/>
+            <div class="container">
+                <h:outputLabel styleClass="logotxt5" style="font-weight: normal;text-align: center;" value="Admin - Student Information" />
+                <p:panel rendered="#{userLogin.adminLogged}" style="float:right;padding-right: 30px;border:none;">
+                    <h:outputLabel style="font-weight: normal;text-align: center;" value="Welcome, #{userLogin.user.userFirstName} #{userLogin.user.userLastName}!" />
+                </p:panel>
+                <h:form id ="mainform" >
+                    <p:panel style="border:none;margin-top: 50px;min-height: 400px;">
+                        <h:outputLabel value="ST CODE: " style=""/>
+                        <h:outputLabel value="#{adminBean.selectedStudent.studentIdentificationCode}" style="color: deeppink;font-size: 14px; font-weight: bold;"/>
+                        <p:spacer width="10px" />
+                        <h:outputLabel value="NAME: " style=""/>
+                        <h:outputLabel value="#{adminBean.selectedStudent.firstName} #{adminBean.selectedStudent.lastName}" style="color: deeppink;font-size: 14px; font-weight: bold;"/>
+                        <p:spacer width="100%" height="15px" />
+                        <p:panelGrid columns="1" styleClass="topAlignmentClass">
+                            <p:fieldset styleClass="adminStudentFieldsetPaneStyle" collapsed="true" legend="Student Data" toggleable="true" toggleSpeed="500" >  
+                                <p:panelGrid columns="6">
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <p:outputLabel styleClass="adminFieldSetLabel" value="First Name:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedStudent.firstName}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Middle:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedStudent.middleName}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Last Name:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedStudent.lastName}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <p:outputLabel styleClass="adminFieldSetLabel" value="Gender:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedStudent.gender}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Student Code:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedStudent.studentIdentificationCode}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Id:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedStudent.studentID}"/>  
+                                    </p:panelGrid>
+                                </p:panelGrid>
+                                <p:panelGrid columns="6">
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Student e-mail:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedStudent.studentEmail}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Parent e-mail:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedStudent.parentGuardianEmail}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Address:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedStudent.address1}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="City:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedStudent.city}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="State:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedStudent.state}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Zipcode:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedStudent.zipcode}"/>  
+                                    </p:panelGrid>
+                                </p:panelGrid>
+                                <p:panelGrid columns="1" rendered="#{adminBean.selectedStudent.comment != null and adminBean.selectedStudent.comment.length() > 0}">
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Admin Note About Student:" />  
+                                        <h:inputTextarea style="font-size: 10px;font-weight: normal;width: 100%;height: 50px" value="#{adminBean.selectedStudent.comment}" disabled="true"/>  
+                                    </p:panelGrid>
+                                </p:panelGrid>
+                                <p:separator styleClass="separatorClass"/>
+                                <p:panel style="border:none" >
+                                    <p:commandButton style="font-size: 10px;background-color: #3ddcf8;margin-left: 5px;margin-top: 15px;border-radius: 5px" 
+                                                     value="Update" update=":formUpdateStudent" oncomplete="dlgUpdateStudent.show();">
+                                        <f:setPropertyActionListener value="#{adminBean.selectedStudent}" target="#{adminBean.studentToUpdate}" />  
+                                    </p:commandButton>
+                                    <p:commandButton style="font-size: 10px;background-color: #3ddcf8;margin-left: 5px;margin-top: 15px;border-radius: 5px" 
+                                                     value="Delete" disabled="true"
+                                                     /> 
+                                    <p:commandButton style="font-size: 10px;background-color: #3ddcf8;margin-left: 5px;margin-top: 15px;border-radius: 5px" 
+                                                     value="Merge" disabled="true"
+                                                     /> 
+                                    <p:commandButton style="font-size: 10px;background-color: #3ddcf8;margin-left: 5px;margin-top: 15px;border-radius: 5px" 
+                                                     update=":formCreateReg" oncomplete="dlgCreateReg.show();"
+                                                     value="Register" disabled="#{adminBean.selectedStudent.status == 2}">
+                                        <f:setPropertyActionListener value="#{adminBean.selectedStudent}" target="#{adminBean.studentToUpdate}" />  
+                                    </p:commandButton> 
+                                </p:panel>
+                            </p:fieldset>
+                            <p:fieldset styleClass="adminStudentFieldsetPaneStyle" collapsed="true" legend="Registration" toggleable="true" toggleSpeed="500" > 
+                                <p:outputLabel rendered="#{adminBean.selectedStudent.status == 2 and !adminBean.levelAvailable}" style="background-color: yellow;color: red" value="WARNING: Student registration level is not available for this location session!" />
+                                <p:panelGrid columns="2">
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Center:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedStudent.locationCode}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Session:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedStudent.sessionName}"/>  
+                                    </p:panelGrid>
+                                </p:panelGrid>
+                                <p:panelGrid columns="5">
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <p:outputLabel styleClass="adminFieldSetLabel" value="Status:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{userLogin.commonData.getRegistrationStatusCodeName(adminBean.selectedStudent.status)}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Reg Date:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedStudent.dateTime}" />  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Level:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedStudent.level}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="T-shirt Size:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedStudent.tshirtSize}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Contact Phone:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedStudent.contactPhone1}"/>  
+                                    </p:panelGrid>
+                                </p:panelGrid>
+                                <p:panelGrid columns="3">
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Parent note:" />  
+                                        <h:inputTextarea style="font-size: 10px;font-weight: normal;width: 100%;height: 50px" value="#{adminBean.selectedStudent.parentNote}" disabled="true"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Manager note:" />  
+                                        <h:inputTextarea style="font-size: 10px;font-weight: normal;width: 100%;height: 50px" value="#{adminBean.selectedStudent.managerNote}" disabled="true"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Admin note:" />  
+                                        <h:inputTextarea style="font-size: 10px;font-weight: normal;width: 100%;height: 50px" value="#{adminBean.selectedStudent.adminNote}" disabled="true"/>  
+                                    </p:panelGrid>
+                                </p:panelGrid>
+                                <p:panelGrid columns="5">
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Reg Payment Date:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedStudent.paymentDate}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Transaction ID:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedStudent.transactionID}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Pmt method:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{userLogin.commonData.getPaymentMethodName(adminBean.selectedStudent.paymentMethod)}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Amount paid:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedStudent.paymentAmount}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Discount:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedStudent.discountTypeName}"/>  
+                                    </p:panelGrid>
+                                </p:panelGrid>
+                                <p:panelGrid columns="5">
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Payment Date:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.mkPayment.paypalDate}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Pmt method:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{userLogin.commonData.getPaymentMethodName(adminBean.mkPayment.paymentMethod)}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Amount Total:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.mkPayment.amount}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Made by:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.mkPayment.madeByUserName}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Comment:" />  
+                                        <h:inputTextarea style="font-size: 10px;font-weight: normal;width: 100%;height: 50px" value="#{adminBean.mkPayment.comment}" disabled="true"/>  
+                                    </p:panelGrid>
+                                </p:panelGrid>
+                                <p:separator styleClass="separatorClass"/>
+                                <p:panel style="border:none" >
+                                    <p:commandButton style="font-size: 10px;background-color: #3ddcf8;margin-left: 5px;margin-top: 15px;border-radius: 5px" 
+                                                     disabled="#{adminBean.selectedStudent.status != 2}"
+                                                     value="Update" update=":formUpdateReg" oncomplete="dlgUpdateReg.show();">
+                                        <f:setPropertyActionListener value="#{adminBean.selectedStudent}" target="#{adminBean.studentToUpdate}" />  
+                                    </p:commandButton>
+                                    <p:commandButton style="font-size: 10px;background-color: #3ddcf8;margin-left: 5px;margin-top: 15px;border-radius: 5px" 
+                                                     disabled="#{adminBean.selectedStudent.status != 2}"
+                                                     value="Change Center / Session" update=":formUpdateCenter" oncomplete="dlgUpdateCenter.show();"
+                                                     /> 
+                                    <p:commandButton style="font-size: 10px;background-color: #3ddcf8;margin-left: 5px;margin-top: 15px;border-radius: 5px" 
+                                                     value="Unregister" disabled="#{adminBean.selectedStudent.status != 2}"
+                                                     update=":unregisterStudentForm" title="Unregister student" 
+                                                     oncomplete="dlgUnregisterStudent.show();" >
+                                        <f:setPropertyActionListener value="#{adminBean.selectedStudent}" target="#{adminBean.studentToUpdate}" />  
+                                    </p:commandButton>
+                                    <p:commandButton style="font-size: 10px;background-color: #3ddcf8;margin-left: 5px;margin-top: 15px;border-radius: 5px" 
+                                                     disabled="#{adminBean.selectedStudent.status != 2}"
+                                                     update=":dlgMessageForm"
+                                                     actionListener="#{adminBean.resendThisRegistrationEmail()}"                                                     value="Resend Confirmation" /> 
+                                    <p:commandButton style="font-size: 10px;background-color: #3ddcf8;margin-left: 5px;margin-top: 15px;border-radius: 5px" 
+                                                     value="Show History" disabled="true"
+                                                     /> 
+                                </p:panel>
+                            </p:fieldset>
+                            <p:fieldset styleClass="adminStudentFieldsetPaneStyle" collapsed="true" legend="Parent/Guardian" toggleable="true" toggleSpeed="500" >  
+                                <p:panelGrid columns="5">
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="User ID:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedUser.userID}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="First Name:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedUser.userFirstName}" />  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Last Name:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedUser.userLastName}" />  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="E-mail" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedUser.userEmail}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Phone:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedUser.userPhoneCell}"/>  
+                                    </p:panelGrid>
+                                </p:panelGrid>
+                                <p:panelGrid columns="3">
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Logon Name:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedUser.logonName}"/>  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Password:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedUser.logonPassword}" />  
+                                    </p:panelGrid>
+                                    <p:panelGrid styleClass="adminDetailStudentPanelStyle" columns="1">
+                                        <h:outputLabel styleClass="adminFieldSetLabel" value="Roles:" />  
+                                        <h:outputText styleClass="adminFieldSetText" value="#{adminBean.selectedUser.listUserRoles()}" />  
+                                    </p:panelGrid>
+                                </p:panelGrid>
+                                <p:separator styleClass="separatorClass"/>
+                                <p:panel style="border:none" >
+                                    <p:commandButton style="font-size: 10px;background-color: #3ddcf8;margin-left: 5px;margin-top: 15px;border-radius: 5px" 
+                                                     value="Change User" oncomplete="dlgSearchUser.show()"
+                                                     > 
+                                        <f:setPropertyActionListener value="true" target="#{adminUsersBean.dialogAccess}" />  
+                                    </p:commandButton>
+                                </p:panel>
+                            </p:fieldset>
+                            <p:fieldset styleClass="adminStudentFieldsetPaneStyle" collapsed="true" legend="Results" toggleable="true" toggleSpeed="500" >  
+                                <p:dataTable styleClass="currentStudentsTableStyle" var="stResult" value="#{adminBean.studentResults}" 
+                                             emptyMessage="No results found." > 
+                                    <p:column headerText="Year">  
+                                        <h:outputText value="#{stResult.year}" />  
+                                    </p:column>  
+                                    <p:column headerText="Level">  
+                                        <h:outputText value="#{stResult.level}" />  
+                                    </p:column>  
+                                    <p:column headerText="Competition Center">  
+                                        <h:outputText value="#{stResult.locationName}" />  
+                                    </p:column>  
+                                    <p:column headerText="City / State">  
+                                        <h:outputText value="#{stResult.locationCity} / #{stResult.locationState}" />  
+                                    </p:column>  
+                                    <p:column headerText="Score">  
+                                        <h:outputText value="#{stResult.score}" />  
+                                    </p:column>  
+                                    <p:column headerText="PCT">  
+                                        <h:outputText value="#{stResult.percentage}" />  
+                                    </p:column>  
+                                    <p:column headerText="Nation Place">  
+                                        <h:outputText value="#{stResult.nationPlace}" />  
+                                    </p:column>  
+                                    <p:column headerText="Nation Percentile">  
+                                        <h:outputText value="#{stResult.nationPercentile}" />  
+                                    </p:column>  
+                                    <p:column headerText="State Place">  
+                                        <h:outputText value="#{stResult.showStatePlace()}" />  
+                                    </p:column>  
+                                    <p:column headerText="State Percentile">  
+                                        <h:outputText value="#{stResult.statePercentile}" />  
+                                    </p:column>  
+                                </p:dataTable>
+                            </p:fieldset>
+                        </p:panelGrid>
+                        <p:commandButton ajax="false" style="font-size: 14px;background-color: orange;margin-left: 5px;margin-top: 15px;border-radius: 5px" 
+                                         value="Back" 
+                                         action="MKRAdminStudents" /> 
+                    </p:panel>
+                </h:form>
+
+                <p:dialog id="dialogUpdateReg" widgetVar="dlgUpdateReg" modal="true" header="UPDATE STUDENT REGISTRATION:">
+                    <h:form id="formUpdateReg">
+                        <p:panel>
+                            <p:panelGrid columns="2" columnClasses="column1,column2" >
+                                <h:outputLabel for="levelId" value="Level (Grade):" />  
+                                <h:selectOneMenu id="levelId" styleClass="studentPanelSelectOneMenu" value="#{adminBean.studentToUpdate.levelCode}" label="#{adminBean.studentToUpdate.level}" >
+                                    <f:selectItems value="#{userLogin.commonData.levels}" var="level" itemLabel="#{level.codeAlpha}" itemValue="#{level.code}" />
+                                </h:selectOneMenu>
+                                <h:outputLabel for="tshirtId" value="T-Shirt Size:" />  
+                                <h:selectOneMenu id="tshirtId" styleClass="studentPanelSelectOneMenu" value="#{adminBean.studentToUpdate.tshirtSizeCode}" label="#{adminBean.studentToUpdate.tshirtSize}" >
+                                    <f:selectItems value="#{userLogin.commonData.tShirtSizes}" var="tshirt" itemLabel="#{tshirt.codeAlpha}" itemValue="#{tshirt.code}" />
+                                </h:selectOneMenu>
+                                <h:outputLabel value="Phone Number: *" />  
+                                <p:inputMask value="#{adminBean.studentToUpdate.contactPhone1}" mask="(999) 999-9999" label="Phone Number"/>  
+                                <h:outputLabel value="Admin Note:" />  
+                                <p:inputTextarea rows="5" cols="30" value="#{adminBean.studentToUpdate.adminNote}" style="width: 250px;height: 70px" />
+                            </p:panelGrid>
+                            <p:commandButton value="Update" oncomplete="dlgUpdateReg.hide()" update=":mainform :dlgMessageForm"
+                                             action="#{adminBean.updateStudentRegistration()}" styleClass="ui-priority-primary" 
+                                             style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" /> 
+                            <p:commandButton value="Cancel" oncomplete="dlgUpdateReg.hide()" 
+                                             style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" />
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dialogUpdateStudent" widgetVar="dlgUpdateStudent" modal="true" header="UPDATE STUDENT DATA:">
+                    <h:form id="formUpdateStudent">
+                        <p:panel>
+                            <p:panelGrid columns="2" columnClasses="column1,column2" styleClass="generalPanelStyle2">
+                                <h:outputLabel value="First Name:" />  
+                                <p:inputText value="#{adminBean.studentToUpdate.firstName}" label="First Name" maxlength="30">  
+                                </p:inputText>  
+                                <h:outputLabel value="Middle Initial:" />  
+                                <p:inputText maxlength="1" value="#{adminBean.studentToUpdate.middleName}" label="Middle Initial" style="width: 20px">  
+                                </p:inputText>  
+                                <h:outputLabel value="Last Name:" />  
+                                <p:inputText value="#{adminBean.studentToUpdate.lastName}" label="Last Name" maxlength="30">  
+                                </p:inputText>  
+                                <h:outputLabel value="Gender:" />  
+                                <h:selectOneMenu styleClass="generalPanelSelectOneMenu" value="#{adminBean.studentToUpdate.genderCode}" label="#{adminBean.studentToUpdate.gender}" >
+                                    <f:selectItems value="#{userLogin.commonData.genders}" var="gender" itemLabel="#{gender.codeAlpha}" itemValue="#{gender.code}" />
+                                </h:selectOneMenu>
+                                <h:outputLabel value="Parent/Guardian E-mail:" />  
+                                <p:inputText value="#{adminBean.studentToUpdate.parentGuardianEmail}" label="Parent E-mail" maxlength="50">  
+                                </p:inputText>  
+                                <h:outputLabel value="Student E-mail:" />  
+                                <p:inputText value="#{adminBean.studentToUpdate.studentEmail}" label="Student E-mail" maxlength="50">  
+                                </p:inputText>  
+                                <h:outputLabel value="Address:" />  
+                                <p:inputText value="#{adminBean.studentToUpdate.address1}" label="Address" maxlength="50">  
+                                </p:inputText>  
+                                <h:outputLabel value="City:" />  
+                                <p:inputText value="#{adminBean.studentToUpdate.city}" label="City" maxlength="50">  
+                                </p:inputText>  
+                                <h:outputLabel value="State:" />  
+                                <h:selectOneMenu styleClass="generalPanelSelectOneMenu" value="#{adminBean.studentToUpdate.state}" label="#{adminBean.studentToUpdate.stateName}" >
+                                    <f:selectItems value="#{userLogin.commonData.states}" var="state" itemLabel="#{state.description}" itemValue="#{state.codeAlpha}" />
+                                </h:selectOneMenu>
+                                <h:outputLabel value="Zip code:" />  
+                                <p:inputMask mask="99999" value="#{adminBean.studentToUpdate.zipcode}" label="Zip code" style="width: 50px"/>  
+                                <h:outputLabel value="School Name:" />  
+                                <p:inputText value="#{adminBean.studentToUpdate.schoolName}" label="School Name" maxlength="50">  
+                                </p:inputText>  
+                                <h:outputLabel value="Teacher's First Name:" />  
+                                <p:inputText value="#{adminBean.studentToUpdate.teacherFirstName}" label="First Name" maxlength="30" >  
+                                </p:inputText>  
+                                <h:outputLabel value="Teacher's Last Name:" />  
+                                <p:inputText value="#{adminBean.studentToUpdate.teacherLastName}" label="Last Name" maxlength="30">  
+                                </p:inputText>  
+                                <h:outputLabel value="Teacher's Email:" />  
+                                <p:inputText value="#{adminBean.studentToUpdate.teacherEmail}" label="Teacher's Email" >  
+                                </p:inputText>  
+                                <h:outputLabel value="Comment About Student:" />  
+                                <p:inputTextarea rows="5" cols="30" value="#{adminBean.studentToUpdate.comment}" style="width: 250px;height: 100px" />
+                            </p:panelGrid>
+                            <p:commandButton value="Update" oncomplete="dlgUpdateStudent.hide()" update=":mainform :dlgMessageForm"
+                                             action="#{adminBean.updateStudentData()}" styleClass="ui-priority-primary" 
+                                             style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" /> 
+                            <p:commandButton value="Cancel" oncomplete="dlgUpdateStudent.hide()" 
+                                             style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" />
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dialogUpdateCenter" widgetVar="dlgUpdateCenter" modal="true" header="CHOOSE NEW CENTER AND SESSION:">
+                    <h:form id="formUpdateCenter">
+                        <p:panel>
+                            <p:panelGrid columns="2" columnClasses="column1,column2" >
+                                <h:outputLabel value="Center Code:" />  
+                                <h:selectOneMenu styleClass="studentPanelSelectOneMenu" value="#{adminBean.centerSimple.locationID}" label="#{adminBean.centerSimple.locationCode}" >
+                                    <f:selectItem itemLabel="Select Center" itemValue="" />
+                                    <f:selectItems value="#{adminBean.mkCenters}" var="center" itemLabel="#{center.locationCode}" itemValue="#{center.locationID}" />
+                                    <p:ajax update="mksession updateButton" listener="#{adminBean.loadCenterSessions}" />   
+                                </h:selectOneMenu>
+                                <h:outputLabel value="Session:" />  
+                                <h:selectOneMenu id="mksession" styleClass="studentPanelSelectOneMenu" value="#{adminBean.centerSession.sessionID}" label="#{adminBean.centerSession.sessionName}" >
+                                    <f:selectItem itemLabel="Select Session" itemValue="0" />
+                                    <f:selectItems value="#{adminBean.centerSimple.locationSessions}" var="ses" itemLabel="#{ses.sessionInfo}" itemValue="#{ses.sessionID}" />
+                                    <p:ajax update="updateButton" />   
+                                </h:selectOneMenu>
+                            </p:panelGrid>
+                            <p:commandButton id="updateButton" value="Update" oncomplete="dlgUpdateCenter.hide()" disabled="#{adminBean.centerSession.sessionID == 0 }"
+                                             styleClass="ui-priority-primary" update=":mainform :dlgMessageForm"
+                                             action="#{adminBean.updateRegistrationCenter()}"
+                                             style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" /> 
+                            <p:commandButton value="Cancel" oncomplete="dlgUpdateCenter.hide()" 
+                                             style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" />
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dialogCreateReg" widgetVar="dlgCreateReg" modal="true" header="ADMIN STUDENT REGISTRATION">
+                    <h:form id="formCreateReg">
+                        <p:panel>
+                            <p:panelGrid columns="2" columnClasses="column1,column2" styleClass="generalPanelStyle2">
+                                <f:facet name="header">
+                                    <p:outputLabel value="Student: #{adminBean.selectedStudent.firstName} #{adminBean.selectedStudent.lastName}"/>
+                                </f:facet>
+                                <h:outputLabel value="Center Code:" />  
+                                <h:selectOneMenu styleClass="generalPanelSelectOneMenu" value="#{adminBean.centerSimple.locationID}" label="#{adminBean.centerSimple.locationCode}" >
+                                    <f:selectItem itemLabel="Select Center" itemValue="" />
+                                    <f:selectItems value="#{adminBean.mkCenters}" var="center" itemLabel="#{center.locationCode}" itemValue="#{center.locationID}" />
+                                    <p:ajax update="mksession2 createButton" listener="#{adminBean.loadCenterSessions}" />   
+                                </h:selectOneMenu>
+                                <h:outputLabel value="Session:" />  
+                                <h:selectOneMenu id="mksession2" styleClass="generalPanelSelectOneMenu" value="#{adminBean.centerSession.sessionID}" label="#{adminBean.centerSession.sessionName}" >
+                                    <f:selectItem itemLabel="Select Session" itemValue="0" />
+                                    <f:selectItems value="#{adminBean.centerSimple.locationSessions}" var="ses" itemLabel="#{ses.sessionInfo}" itemValue="#{ses.sessionID}" />
+                                    <p:ajax update="createButton" />   
+                                </h:selectOneMenu>
+                                <h:outputLabel for="levelId" value="Level (Grade):" />  
+                                <h:selectOneMenu id="levelId" styleClass="generalPanelSelectOneMenu" value="#{adminBean.studentToUpdate.levelCode}" label="#{adminBean.studentToUpdate.level}" >
+                                    <f:selectItems value="#{userLogin.commonData.levels}" var="level" itemLabel="#{level.codeAlpha}" itemValue="#{level.code}" />
+                                    <p:ajax update="createButton" />   
+                                </h:selectOneMenu>
+                                <h:outputLabel for="tshirtId" value="T-Shirt Size:" />  
+                                <h:selectOneMenu id="tshirtId" styleClass="generalPanelSelectOneMenu" value="#{adminBean.studentToUpdate.tshirtSizeCode}" label="#{adminBean.studentToUpdate.tshirtSize}" >
+                                    <f:selectItems value="#{userLogin.commonData.tShirtSizes}" var="tshirt" itemLabel="#{tshirt.codeAlpha}" itemValue="#{tshirt.code}" />
+                                    <p:ajax update="createButton" />   
+                                </h:selectOneMenu>
+                                <h:outputLabel value="Phone Number: *" />  
+                                <p:inputMask value="#{adminBean.studentToUpdate.contactPhone1}" mask="(999) 999-9999" label="Phone Number"/>  
+                                <h:outputLabel value="Admin Note:" />  
+                                <p:inputTextarea rows="5" cols="30" value="#{adminBean.studentToUpdate.adminNote}" style="width: 250px;height: 70px" />
+                            </p:panelGrid>
+                            <p:panel id="paymentPanel" styleClass="generalPanelStyle">
+                                <p:panelGrid columns="2" columnClasses="column1,column2" styleClass="generalPanelStyle2">
+                                    <f:facet name="header">
+                                        <p:outputLabel value="Registration - Transaction ID and Amount"/>
+                                    </f:facet>
+                                    <h:outputLabel value="Transaction ID:" />  
+                                    <p:inputText value="#{adminBean.studentToUpdate.transactionID}" label="Transaction ID">
+                                        <p:ajax event="keyup" update="createButton"/>   
+                                        <p:ajax event="blur" update="createButton"/>   
+                                    </p:inputText>  
+                                    <h:outputLabel value="Amount:" />  
+                                    <p:inputMask value="#{adminBean.studentToUpdate.paymentAmount}" label="Total Transaction Amount" mask="?99" size="4">
+                                    </p:inputMask>
+                                </p:panelGrid>
+                                <p:panelGrid columns="2" columnClasses="column1,column2" styleClass="generalPanelStyle" >
+                                    <f:facet name="header">
+                                        <p:outputLabel value="Payment Data"/>
+                                    </f:facet>
+                                    <p:outputLabel style="font-size: 12px;color: red;" value="Create Payment Data?" />
+                                    <p:selectBooleanButton id="pmtCreateFlag" value="#{adminBean.flag1}" onLabel="Yes" offLabel="No" onIcon="ui-icon-check" offIcon="ui-icon-close" style="font-size: 10px">
+                                        <p:ajax update="paymentPanel" process=":formCreateReg"/>
+                                    </p:selectBooleanButton>
+                                    <h:outputLabel value="Total Amount:" />  
+                                    <p:inputMask value="#{adminBean.mkPaymentCreate.amount}" label="Total Transaction Amount" mask="?9999" size="4" disabled="#{!adminBean.flag1}"/>  
+                                    <h:outputLabel value="Payment Note:" />  
+                                    <p:inputTextarea rows="5" cols="30" value="#{adminBean.mkPaymentCreate.comment}" style="width: 250px;height: 70px" disabled="#{!adminBean.flag1}" />
+                                </p:panelGrid>
+                                <p:tooltip style="width:200px" for="pmtCreateFlag" value="Select 'Yes' if you want to create a payment record that will be connected to the above transaction. This payment can combain registration for multiple students if you decide to reuse the above transaction ID for other registration."/>
+                            </p:panel>
+                            <p:commandButton id="createButton" value="Register" oncomplete="dlgCreateReg.hide()" update=":mainform :dlgMessageForm" disabled="#{adminBean.disableRegisterButton()}"
+                                             action="#{adminBean.createStudentRegistration()}" styleClass="ui-priority-primary" 
+                                             style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" /> 
+                            <p:commandButton value="Cancel" oncomplete="dlgCreateReg.hide()" 
+                                             style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" />
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dialogMessage" widgetVar="dlgMessage" modal="true" header="MESSAGE" width="450px" >
+                    <h:form id="dlgMessageForm">
+                        <p:panel styleClass="centeredItemsPanel" >
+                            <p:panelGrid columns="1" style="border: none;text-align: center">
+                                <h:outputLabel value="#{adminBean.dialogMessageText}"/>
+                                <p:commandButton value="OK" oncomplete="dlgMessage.hide()" 
+                                                 styleClass="ui-priority-primary" 
+                                                 style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" /> 
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog widgetVar="dlgUnregisterStudent" modal="true" header="CONFIRMATION:" width="450px">
+                    <h:form id="unregisterStudentForm">
+                        <p:panel id="unregisterPanel" styleClass="centeredItemsPanel" >
+                            <p:panelGrid columns="1" style="border: none;">
+                                <h:outputLabel value="Unregister #{adminBean.studentToUpdate.firstName} #{adminBean.studentToUpdate.lastName} [#{adminBean.studentToUpdate.studentIdentificationCode}] ?"/>
+                                <p:panelGrid id="refundPanel" columns="1" style="border:none" rendered="#{adminBean.studentToUpdate.paymentMethod == 1}">
+                                    <h:outputLabel style="color:red;font-size: 11px;" value="This registration was paid using CC and can be refunded."/>
+                                    <p:panelGrid columns="1" style="border:none">
+                                        <p:selectBooleanCheckbox value="#{adminBean.refundFlag}" itemLabel="Refund?" >
+                                            <p:ajax update="refundPanel"/>
+                                        </p:selectBooleanCheckbox>
+                                        <p:spinner disabled="#{!adminBean.refundFlag}" prefix="$" min="1" max="#{adminBean.studentToUpdate.paymentAmount}" 
+                                                   value="#{adminBean.refundAmount}" styleClass="generalSpinner" />
+                                    </p:panelGrid>
+                                </p:panelGrid>
+                                <p:selectBooleanCheckbox value="#{adminBean.unregisterEmailFlag}" itemLabel="Send e-mail?" >
+                                </p:selectBooleanCheckbox>
+                                <h:panelGroup>
+                                    <p:commandButton value="Unregister" oncomplete="dlgUnregisterStudent.hide()" id="unregisterButton"
+                                                     actionListener="#{adminBean.unregisterStudent()}" styleClass="ui-priority-primary" update=":mainform :dlgMessageForm" 
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" /> 
+                                    <p:spacer width="10px"/>
+                                    <p:commandButton value="Cancel" oncomplete="dlgUnregisterStudent.hide()" styleClass="ui-priority-primary" immediate="true"
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" />
+                                </h:panelGroup>
+                            </p:panelGrid>
+                            <p:blockUI block="unregisterPanel" trigger="unregisterButton" />
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog widgetVar="dlgSearchUser" modal="true" header="USER SEARCH" width="500px">
+                    <h:form id="userSearchForm">
+
+                        <p:panel style="border:none;">
+                            <p:panel styleClass="adminSearchPanel" header="User Search Criteria">
+                                <p:panelGrid id="criteria" columns="2" columnClasses="column1,column2" styleClass="generalPanelStyle2" >
+                                    <h:outputLabel value="User First:" style="font-weight: normal;font-size: 10px"/>  
+                                    <p:inputText value="#{adminUsersBean.userFirstSearch}" /> 
+                                    <h:outputLabel value="User Last:" style="font-weight: normal;font-size: 10px"/>  
+                                    <p:inputText value="#{adminUsersBean.userLastSearch}" /> 
+                                    <h:outputLabel value="Logon Name:" style="font-weight: normal;font-size: 10px"/>  
+                                    <p:inputText value="#{adminUsersBean.userLogonNameSearch}" /> 
+                                    <h:outputLabel value="E-mail:" style="font-weight: normal;font-size: 10px"/>  
+                                    <p:inputText value="#{adminUsersBean.userEmailSearch}" /> 
+                                </p:panelGrid>
+                                <p:message for="find" />
+                                <p:commandButton ajax="true" style="font-size: 10px;background-color: #ccc;border-radius: 5px" 
+                                                 value="Find" id="find"
+                                                 action="#{adminUsersBean.searchUsers}"
+                                                 update=":userSearchForm"/> 
+                                <p:spacer width="10px" />
+                                <p:commandButton ajax="true" style="font-size: 10px;background-color: #ccc;border-radius: 5px" 
+                                                 value="Clear" 
+                                                 action="#{adminUsersBean.clearCriteria}"
+                                                 update="criteria"/> 
+                            </p:panel>
+                            <p:spacer width="100%" height="5px" />
+                            <p:panel style="border: none">
+                                <p:panel styleClass="generalPanelGridStyle" >
+                                    <h:outputLabel value="User Search Results" style="font-weight: bold;font-size: 14px"/>  
+                                </p:panel>
+                                <p:dataTable styleClass="searchTableStyle" var="user" value="#{adminUsersBean.adminUsers}" 
+                                             paginator="true" rows="5"
+                                             style="margin-top: 5px;"
+                                             emptyMessage="No results found."> 
+                                    <p:column headerText="User ID" sortBy="#{user.userID}" >  
+                                        <p:commandLink actionListener="#{adminBean.changeUser(user)}" 
+                                                       update=":mainform :dlgMessageForm" onclick="dlgSearchUser.hide()">
+                                            <h:outputText style="color: blue;font-weight: bold;font-size: 10px" 
+                                                          title="Choose this user"
+                                                          value="#{user.userID}" />
+                                        </p:commandLink>
+                                    </p:column>  
+                                    <p:column headerText="First" sortBy="#{user.userFirstName}">  
+                                        <h:outputText value="#{user.userFirstName}" style="font-size: 10px" />  
+                                    </p:column>  
+                                    <p:column headerText="Last" sortBy="#{user.userLastName}">  
+                                        <h:outputText value="#{user.userLastName}" style="font-size: 10px" />  
+                                    </p:column>  
+                                    <p:column headerText="E-mail" sortBy="#{user.userEmail}">  
+                                        <h:outputText value="#{user.userEmail}" style="font-size: 10px" />  
+                                    </p:column>  
+                                    <p:column headerText="Logon Name" sortBy="#{user.logonName}">  
+                                        <h:outputText value="#{user.logonName}" style="font-size: 10px" />  
+                                    </p:column>  
+                                    <p:column headerText="Roles" >  
+                                        <h:outputText value="#{user.roleName}" style="font-size: 10px" />  
+                                    </p:column>  
+                                </p:dataTable>
+                            </p:panel>
+                            <p:commandButton style="font-size: 14px;background-color: orange;margin-left: 5px;margin-top: 15px;border-radius: 5px" 
+                                             value="Close" onclick="dlgSearchUser.hide()"/> 
+
+                        </p:panel>
+                        <p:blockUI block=":userSearchForm" trigger="find" />
+
+                    </h:form>
+                </p:dialog>
+
+                <div id="footer">Copyright © 2003 of Math Kangaroo in USA, NFP Inc. All Rights Reserved.</div>
+            </div>
+        </div>
+    </h:body>
+</html>
+
+

@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Username/Password Retrieval</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="css/maincss.css" rel="stylesheet" type="text/css"/>        
+        <link rel="stylesheet" href="css/newcss.css" type="text/css"/>
+        <link rel="stylesheet" href="css/newcss1.css" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript">
+
+            window.onload = function()
+            {
+                var separator = " - ";
+                var dateTime = new Date();
+                var formattedDateTime = dateTime.toLocaleDateString();
+                var divObject = document.getElementById("dateTimeValue");
+                divObject.innerHTML = formattedDateTime;
+            };
+        </script>
+    </h:head>
+    <h:body>
+        <div id="wrapper">
+            <ui:include src="main_header.html"/>
+            <div class="container">
+                <h:form id ="userPswResetForm" >
+                    <p:panelGrid columns="1" style="border:none">
+                        <h:outputLabel styleClass="logotxt5" style="font-weight: normal;text-align: center;" value="Username/Password Retrieval" />
+                        <h:outputText rendered="#{!userLogin.passwordRetrieval}" style="font-size:12px;font-weight: lighter" value="Please provide as much information as possible to retrieve user data. Providing a username is recommended. If you don't remember your log-in, provide the email address the student was registered under with a 4-digit code and the first and last name of the individual completing the registration. Your credentials will be sent to the e-mail on file upon providing the correct answers to the selected security question(s).">
+                        </h:outputText>
+                    </p:panelGrid>
+                    <p:panel style="width:50%;border:none;font-size:12px">
+                        <p:panel style="border:none;" rendered="#{!userLogin.passwordRetrieval}">
+                            <h:panelGrid columns="2" columnClasses="column1,column2"> 
+                                <h:outputLabel value="First name:"/>
+                                <p:inputText value="#{userLogin.userPR.firstName}"   
+                                             label="firstname" />  
+                                <h:outputLabel value="Last name:"/>
+                                <p:inputText value="#{userLogin.userPR.lastName}"   
+                                             label="lastname" />  
+                                <h:outputLabel value="Logon name:"/>
+                                <p:inputText value="#{userLogin.userPR.logonName}"   
+                                             label="logname" />  
+                                <h:outputLabel value="Email:" />  
+                                <p:inputText value="#{userLogin.userPR.email}"   
+                                             title="Email" />  
+                                <h:outputLabel value="4-digit code:" />  
+                                <p:inputText value="#{userLogin.userPR.authCode}"   
+                                             title="4-digit code" />  
+                                <p:commandButton style="font-size: 12px;background-color: orange;margin-left:130px;margin-right: 5px;border-radius: 5px" value="Next" update=":userPswResetForm" actionListener="#{userLogin.findMatch}"/> 
+                                <p:commandButton style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 5px" value="Cancel" actionListener="#{userLogin.goBackToLoginPage}" /> 
+                            </h:panelGrid>
+                        </p:panel>
+                        <p:panel style="border:none;" rendered="#{userLogin.passwordRetrieval}">
+                            <h:panelGrid columns="2" columnClasses="column1,column2"> 
+                                <h:outputLabel value="Your secure question:"/>
+                                <p:outputLabel value="#{userLogin.userPR.authQuestion}" style="color: blue" />  
+                                <h:outputLabel value="Provide answer:"/>
+                                <p:inputText value="#{userLogin.userPR.authAnswer}"   
+                                             label="secureanswer" />  
+                                <h:outputLabel value="Email to send password to:" />  
+                                <p:inputText value="#{userLogin.userPR.email}"   
+                                             title="Email" />  
+                                <p:commandButton style="font-size: 12px;background-color: orange;margin-left:130px;margin-right: 5px;border-radius: 5px" value="Next" update=":userPswResetForm" action="#{userLogin.compareAnswer}"/> 
+                                <p:commandButton style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 5px" value="Cancel" actionListener="#{userLogin.goBackToLoginPage}" /> 
+                            </h:panelGrid>
+                        </p:panel>
+                        <p:messages closable="true"/>
+                    </p:panel>
+                </h:form>      
+            </div>
+            <div id="footer">Copyright © 2003 of Math Kangaroo in USA, NFP Inc. All Rights Reserved.</div>
+        </div>
+    </h:body>
+</html>
+
+

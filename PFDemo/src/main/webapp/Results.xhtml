@@ -1,0 +1,173 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Math Kangaroo Results</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="css/mkresults.css" type="text/css"/>
+
+        <script type="text/javascript">
+
+            window.onload = function()
+            {
+                var separator = " - ";
+                var dateTime = new Date();
+                var formattedDateTime = dateTime.toLocaleDateString();
+                var divObject = document.getElementById("dateTimeValue");
+                divObject.innerHTML = formattedDateTime;
+            }
+        </script>
+    </h:head>
+    <h:body>
+        <div id="wrapper">
+            <ui:include src="main_header.html"/>
+
+            <!-- Top Ribbin  --> 
+            <div class="rectangle">
+                <div class="headline">Math Kangaroo 2017 Winners</div></div>
+            <div class="triangle-l"></div>
+            <div class="triangle-r"></div>
+            <!-- End of Top Ribbin  --> 
+
+
+            <div class="bcontainer">
+                <h:form id="resultsForm">  
+                    <h:panelGrid styleClass="buttonsPanel">
+                        <p:row>
+                            <p:column>
+                                <p:commandButton style="font-size: 16px;background-color: #d0f4fc;margin-right: 10px;border-radius: 10px"
+                                                 actionListener="#{resultsBean.showNationalWiners}" update=":resultsForm" value="National Winners"/>
+                            </p:column>
+                            <p:column>
+                                <p:commandButton style="font-size: 16px;background-color: #ffcccc;margin-right: 10px;border-radius: 10px"
+                                                 actionListener="#{resultsBean.showStatesWiners}" update=":resultsForm" value="State Winners"/>
+                            </p:column>
+                            <p:column>
+                                <p:commandButton style="font-size: 16px;background-color: #66ff66;margin-right: 10px;border-radius: 10px"
+                                                 disabled="true"
+                                                 actionListener="#{resultsBean.showAwards}" update=":resultsForm" value="Awards"/>
+                            </p:column>
+                        </p:row>
+                    </h:panelGrid>
+
+                    <p:panel styleClass="buttonsPanel">
+                    </p:panel>
+
+                    <p:dataTable rendered="#{resultsBean.tableToShow == 1}" widgetVar="nationTable" var="student" value="#{resultsBean.nationLevelStudents}" paginator="true" rows="50"  
+                                 filteredValue="#{resultsBean.filteredNationStudents}" id="nationListTable" styleClass="nationResultsTable" >  
+                        <f:facet name="header">
+                            <h:outputLabel value="Level:" style="vertical-align: super;"/>
+                            <p:spacer width="20px" height="0px"/>
+                            <p:selectOneMenu value="#{resultsBean.nationLevelToShow}" style="width:125px" >
+                                <f:selectItem itemLabel="Select One" itemValue="0" />
+                                <f:selectItem itemLabel="Level 1" itemValue="1" />
+                                <f:selectItem itemLabel="Level 2" itemValue="2" />
+                                <f:selectItem itemLabel="Level 3" itemValue="3" />
+                                <f:selectItem itemLabel="Level 4" itemValue="4" />
+                                <f:selectItem itemLabel="Level 5" itemValue="5" />
+                                <f:selectItem itemLabel="Level 6" itemValue="6" />
+                                <f:selectItem itemLabel="Level 7" itemValue="7" />
+                                <f:selectItem itemLabel="Level 8" itemValue="8" />
+                                <f:selectItem itemLabel="Level 9" itemValue="9" />
+                                <f:selectItem itemLabel="Level 10" itemValue="10" />
+                                <f:selectItem itemLabel="Level 11" itemValue="11" />
+                                <f:selectItem itemLabel="Level 12" itemValue="12" />
+                                <p:ajax update=":resultsForm" oncomplete="PF('nationTable').clearFilters()" />
+                            </p:selectOneMenu>
+                        </f:facet>
+                        <p:column headerText="Level" id="level">  
+                            <h:outputText value="#{student.levelCode}" />
+                        </p:column>  
+                        <p:column headerText="National Rank" sortBy="#{student.nationPlace}" filterBy="#{student.nationPlace}" filterMatchMode="exact" id="nationPlace">  
+                            <h:outputText value="#{student.nationPlace}" />
+                        </p:column>  
+                        <p:column headerText="Score" sortBy="#{student.score}" id="score">  
+                            <h:outputText value="#{student.score}" />
+                        </p:column>  
+                        <p:column headerText="First Name" sortBy="#{student.firstName}" filterBy="#{student.firstName}" id="firstName">  
+                            <h:outputText value="#{student.firstName}" />
+                        </p:column>  
+                        <p:column headerText="Last Name" sortBy="#{student.lastName}" filterBy="#{student.lastName}" id="lastName">  
+                            <h:outputText value="#{student.lastName}" />
+                        </p:column>  
+                        <p:column headerText="Center Name" sortBy="#{student.locationName}" filterBy="#{student.locationName}" id="centerName">  
+                            <h:outputText value="#{student.locationName}" />
+                        </p:column>  
+                        <p:column headerText="City" sortBy="#{student.locationCity}" filterBy="#{student.locationCity}" id="centerCity">  
+                            <h:outputText value="#{student.locationCity}" />
+                        </p:column>  
+                        <p:column headerText="State" sortBy="#{student.locationState}" filterBy="#{student.locationState}" id="centerState">  
+                            <h:outputText value="#{student.locationState}" />
+                        </p:column>  
+                    </p:dataTable> 
+
+                    <p:dataTable rendered="#{resultsBean.tableToShow == 2}" widgetVar="statesTable" var="student" value="#{resultsBean.statesLevelStudents}" paginator="true" rows="50"  
+                                 filteredValue="#{resultsBean.filteredStatesStudents}" id="statesListTable" styleClass="statesResultsTable" >  
+                        <f:facet name="header">
+                            <h:outputLabel value="Level:" style="vertical-align: super;"/>
+                            <p:spacer width="20px" height="0px"/>
+                            <p:selectOneMenu value="#{resultsBean.statesLevelToShow}" style="width:125px">
+                                <f:selectItem itemLabel="Select One" itemValue="0" />
+                                <f:selectItem itemLabel="Level 1" itemValue="1" />
+                                <f:selectItem itemLabel="Level 2" itemValue="2" />
+                                <f:selectItem itemLabel="Level 3" itemValue="3" />
+                                <f:selectItem itemLabel="Level 4" itemValue="4" />
+                                <f:selectItem itemLabel="Level 5" itemValue="5" />
+                                <f:selectItem itemLabel="Level 6" itemValue="6" />
+                                <f:selectItem itemLabel="Level 7" itemValue="7" />
+                                <f:selectItem itemLabel="Level 8" itemValue="8" />
+                                <f:selectItem itemLabel="Level 9" itemValue="9" />
+                                <f:selectItem itemLabel="Level 10" itemValue="10" />
+                                <f:selectItem itemLabel="Level 11" itemValue="11" />
+                                <f:selectItem itemLabel="Level 12" itemValue="12" />
+                                <p:ajax update=":resultsForm" oncomplete="PF('statesTable').clearFilters()" />
+                            </p:selectOneMenu>
+                        </f:facet>
+
+                        <p:column headerText="Level" id="level">  
+                            <h:outputText value="#{student.levelCode}" />
+                        </p:column>  
+                        <p:column headerText="State" sortBy="#{student.locationState}" filterBy="#{student.locationState}" id="centerState">  
+                            <h:outputText value="#{student.locationState}" />
+                        </p:column>  
+                        <p:column headerText="State Rank" sortBy="#{student.statePlace}" filterBy="#{student.statePlace}" filterMatchMode="exact" id="statePlace">  
+                            <h:outputText value="#{student.statePlace}" />
+                        </p:column>  
+                        <p:column headerText="First Name" sortBy="#{student.firstName}" filterBy="#{student.firstName}" id="firstName">  
+                            <h:outputText value="#{student.firstName}" />
+                        </p:column>  
+                        <p:column headerText="Last Name" sortBy="#{student.lastName}" filterBy="#{student.lastName}" id="lastName">  
+                            <h:outputText value="#{student.lastName}" />
+                        </p:column>  
+                        <p:column headerText="Center Name" sortBy="#{student.locationName}" filterBy="#{student.locationName}" id="centerName">  
+                            <h:outputText value="#{student.locationName}" />
+                        </p:column>  
+                        <p:column headerText="City" sortBy="#{student.locationCity}" filterBy="#{student.locationCity}" id="centerCity">  
+                            <h:outputText value="#{student.locationCity}" />
+                        </p:column>  
+                    </p:dataTable> 
+
+                    <p:dataTable rendered="#{resultsBean.tableToShow == 3}" widgetVar="awardsTable" var="award" value="#{resultsBean.bestStudentsBean.rewardList}" 
+                                 id="awardsTable" styleClass="awardsTable" >  
+
+                        <p:column headerText="AWARD" id="awardItem">  
+                            <h:outputText value="#{award.codeAlpha}" />
+                        </p:column>  
+                        <p:column headerText="QUANTITY" id="quantity">  
+                            <h:outputText value="#{award.code}" />
+                        </p:column>  
+                    </p:dataTable> 
+                </h:form>
+
+
+            </div>
+            <div id="footer">Copyright &copy; since 2003 Math Kangaroo in USA, NFP Inc., All rights reserved.</div>
+        </div>
+    </h:body>
+</html>

@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Math Kangaroo Public Centers Locations</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="css/maincss.css" rel="stylesheet" type="text/css"/>        
+        <link rel="stylesheet" href="css/newcss.css" type="text/css"/>
+        <link rel="stylesheet" href="css/newcss1.css" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript">
+
+            window.onload = function()
+            {
+                var separator = " - ";
+                var dateTime = new Date();
+                var formattedDateTime = dateTime.toLocaleDateString();
+                var divObject = document.getElementById("dateTimeValue");
+                divObject.innerHTML = formattedDateTime;
+            };
+        </script>
+    </h:head>
+    <h:body>
+        <div id="wrapper">
+            <ui:include src="main_header.html"/>
+            <div class="container">
+                <h:form id ="managerLoginForm" >
+                    <p:panelGrid columns="1" style="border:none;">
+                        <h:outputLabel styleClass="logotxt5" style="font-weight: normal;text-align: center;" value="2017 Competition - Public Center Locations" />
+                    </p:panelGrid>
+                    <p:dataTable styleClass="publicCentersTableStyle" var="center" value="#{websiteCentersReportBean.publicCenters}" 
+                                 style="margin-top: 10px;margin-left: 10px;margin-right: 10px"
+                                 paginator="true" rows="14"
+                                 emptyMessage="There is no centers to display.">  
+                        <p:column headerText="INSTITUTION NAME"  sortBy="#{center.locationName}">  
+                            <h:outputText value="#{center.locationName}" />  
+                        </p:column>  
+<!--                        <p:column headerText="SESSIONS"> 
+                            <p:dataList value="#{center.locationSessions}" var="ses" styleClass="publicCentersDataList" type="unordered" >
+                                <h:outputText style="font-size: 10px" 
+                                              value="#{ses.sessionName}" />
+                            </p:dataList>
+                        </p:column> 
+-->
+                        <p:column headerText="ADDRESS" >  
+                            <h:outputText value="#{center.locationAddress1}" />  
+                            <h:outputText rendered="#{center.locationAddress2 != null and center.locationAddress2.trim() != ''}" value=" / #{center.locationAddress2}" />  
+                        </p:column>  
+                        <p:column headerText="CITY" sortBy="#{center.locationCity}" >  
+                            <h:outputText value="#{center.locationCity}" />  
+                        </p:column>  
+                        <p:column headerText="STATE" sortBy="#{center.locationState}" >  
+                            <h:outputText value="#{center.locationState}" />  
+                        </p:column>  
+                    </p:dataTable>
+                </h:form>      
+            </div>
+            <div id="footer">Copyright © 2003 of Math Kangaroo in USA, NFP Inc. All Rights Reserved.</div>
+        </div>
+    </h:body>
+</html>
+
+

@@ -1,0 +1,173 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Math Kangaroo User Profile</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="css/maincss.css" rel="stylesheet" type="text/css"/>        
+        <link rel="stylesheet" href="css/newcss.css" type="text/css"/>
+        <link rel="stylesheet" href="css/newcss1.css" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript">
+
+            window.onload = function()
+            {
+                var separator = " - ";
+                var dateTime = new Date();
+                var formattedDateTime = dateTime.toLocaleDateString();
+                var divObject = document.getElementById("dateTimeValue");
+                divObject.innerHTML = formattedDateTime;
+            };
+        </script>
+    </h:head>
+    <h:body>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{userLogin.isUserLoggedIn}" />  
+        </f:metadata>
+        <div id="wrapper">
+            <ui:include src="main_header.html"/>
+            <div class="container">
+                <h:outputLabel styleClass="logotxt5" style="font-weight: normal;text-align: center;" value="User Profile and Password Update" />
+                <p:panel rendered="#{userLogin.userLogged}" style="float:right;padding-right: 30px;border:none;">
+                    <h:outputLabel style="font-weight: normal;text-align: center;" value="Welcome, #{userLogin.user.userFirstName} #{userLogin.user.userLastName}!" />
+                </p:panel>
+                <h:form id ="userProfileForm" >
+                    <p:panel style="border:none" rendered="#{userProfileBean.verificationNeeded and !userProfileBean.verificationinProgress}">
+                        <p:panel style="width:50%;border:none">
+                            <p:spacer height="20px" width="100%"/>
+                            <h:outputLabel style="font-size:12px;font-weight: normal;color: black"
+                                           value="The e-mail address that you provided has not yet been confirmed. Please verify this e-mail address by clicking Confirm E-mail. Verification will be sent to this address. Please open the e-mail and enter the verification code on the following page. NOTE: Verification e-mail may end up in your spam folder."/>
+                            <p:spacer height="30px" width="100%"/>
+                            <h:panelGrid columns="2" columnClasses="column1,column2">
+                                <h:outputLabel value="E-mail:" />  
+                                <h:outputText value="#{userProfileBean.userToUpdate.userEmail}"   
+                                              title="Email" />  
+                                <p:commandButton style="font-size: 12px;background-color: orange;margin-right: 5px;border-radius: 5px" 
+                                                 value="Confirm E-mail" 
+                                                 update=":userProfileForm" 
+                                                 actionListener="#{userProfileBean.confirmEmail}" />
+                                <p:commandButton ajax="false" style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 5px" 
+                                                 update=":userProfileForm" 
+                                                 value="Back" actionListener="#{userProfileBean.cancelEmailVerification}"/> 
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:panel>
+                    <p:panel style="border:none" rendered="#{userProfileBean.verificationinProgress}">
+                        <p:panel style="width:50%;border:none">
+                            <p:panelGrid  columns="2" >
+                                <h:outputLabel for="emailverification" value="Verification Code: *" />  
+                                <p:inputText value="#{userProfileBean.authorizationCode}"   
+                                             id="emailverification" title="Provide 6 digit verification code" />  
+                                <h:outputLabel for="pwd" value="Password: *" />  
+                                <h:inputSecret value="#{userProfileBean.password}" class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all"   
+                                               id="pwd" title="Type your password" />  
+                            </p:panelGrid>
+                            <p:panelGrid columns="2" columnClasses="column1,column2">
+                                <p:commandButton style="font-size: 12px;background-color: orange;margin-right: 5px;border-radius: 5px" 
+                                                 value="Submit" 
+                                                 update=":userProfileForm" 
+                                                 action="#{userProfileBean.verifyEmail}" /> 
+                                <p:commandButton style="font-size: 12px;background-color: orange;margin-right: 5px;border-radius: 5px" 
+                                                 value="Cancel" 
+                                                 update=":userProfileForm" 
+                                                 actionListener="#{userProfileBean.cancelEmailVerification()}" /> 
+                            </p:panelGrid>
+                        </p:panel>
+                        <p:commandLink id="sendemaillink" 
+                                       update="emailconfirmationpanel"
+                                       actionListener="#{userProfileBean.resendEmail}">
+                            <h:outputText value="Resend Verification Code" />
+                        </p:commandLink>
+                        <p:panel id="emailconfirmationpanel" styleClass="generalPanelGridStyle">
+                            <p:messages id="resentemail" closable="true"/>
+                        </p:panel>
+                    </p:panel>
+                    <p:tabView id="tabView" styleClass="loginTabView" dynamic="true" 
+                               rendered="#{!userProfileBean.verificationNeeded}"
+                               style="border:none;margin: 10px 0px 10px 0px;font-size: 12px;">
+                        <p:tab title="Profile" id="tabone">
+                            <p:panel style="width: 50%;border:none">
+                                <h:panelGrid columns="2" columnClasses="column1,column2">
+                                    <h:outputLabel value="First Name:" />  
+                                    <p:inputText value="#{userProfileBean.userToUpdate.userFirstName}" maxlength="30"  
+                                                 title="First Name" />  
+                                    <h:outputLabel value="Last Name:" />  
+                                    <p:inputText value="#{userProfileBean.userToUpdate.userLastName}" maxlength="30" 
+                                                 title="Last Name" />  
+                                    <h:outputLabel value="Email:" />  
+                                    <p:inputText value="#{userProfileBean.userToUpdate.userEmail}" maxlength="50"  
+                                                 title="Email" />  
+                                    <h:outputLabel value="Phone:" />  
+                                    <p:inputMask value="#{userProfileBean.userToUpdate.userPhoneCell}" mask="(999) 999-9999" label="Contact Phone"/>  
+                                    <h:outputLabel value="Secure question:" />  
+                                    <p:inputText value="#{userProfileBean.userToUpdate.authQuestion}" maxlength="50" 
+                                                 title="Create your secure question" />  
+                                    <h:outputLabel for="answer" value="Secure Answer:" />  
+                                    <p:inputText value="#{userProfileBean.userToUpdate.authAnswer}" maxlength="50"  
+                                                 id="answer" title="Provide your secure answer" />  
+                                    <h:outputLabel value="4-digit code:" />  
+                                    <p:inputMask value="#{userProfileBean.userToUpdate.authCodeTxt}" mask="9999" 
+                                                 title="Provide 4-digit code" />  
+                                    <h:outputLabel for="address1" value="Address: " />  
+                                    <p:inputText value="#{userProfileBean.userToUpdate.userAddress1}" maxlength="50" 
+                                                 id="address1" title="Address" />  
+                                    <h:outputLabel for="city" value="City: " />  
+                                    <p:inputText value="#{userProfileBean.userToUpdate.userCity}" maxlength="50"  
+                                                 id="city" title="City" />  
+                                    <h:outputLabel for="state" value="State: " />  
+                                    <h:selectOneMenu id="state" styleClass="studentPanelSelectOneMenu" style="width:55px" value="#{userProfileBean.userToUpdate.userState}" label="#{userProfileBean.userToUpdate.userState}" >
+                                        <f:selectItems value="#{registrationBean.commonData.states}" var="rstate" itemLabel="#{rstate.codeAlpha}" itemValue="#{rstate.codeAlpha}" />
+                                    </h:selectOneMenu>
+                                    <h:outputLabel for="zipcode" value="Zipcode: " />  
+                                    <p:inputMask value="#{userProfileBean.userToUpdate.userZipcode}" mask="99999"  
+                                                 id="zipcode" title="Zipcode" />  
+                                    <f:facet name="footer"> 
+                                        <p:panelGrid columns="2" columnClasses="column1,column2" styleClass="loginPanelStyle">
+                                            <p:commandButton style="font-size: 12px;background-color: orange;margin-right: 5px;border-radius: 5px" 
+                                                             value="Update" 
+                                                             update=":userProfileForm" 
+                                                             actionListener="#{userProfileBean.updateUserProfile}" />
+                                            <p:commandButton ajax="false" style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 5px" 
+                                                             value="Back" action="MKRHome"/> 
+                                        </p:panelGrid>
+                                    </f:facet>  
+                                </h:panelGrid>
+                                <p:messages closable="true"/>
+                            </p:panel>
+                        </p:tab>
+                        <p:tab title="Change Password" id="tabtwo">
+                            <p:panel style="width:50%;border:none">
+                                <h:panelGrid columns="2" columnClasses="column1,column2">
+                                    <h:outputLabel value="New Password : *" />
+                                    <p:password value="#{userProfileBean.userToUpdate.logonPassword}" title="Provide password" maxlength="50"/>
+
+                                    <h:outputLabel value="Confirm Password: *" />
+                                    <p:password value="#{userProfileBean.userToUpdate.logonPasswordConfirm}" title="Confirm password" maxlength="50" />
+                                    <f:facet name="footer"> 
+                                        <p:panelGrid columns="2" columnClasses="column1,column2" styleClass="loginPanelStyle">
+                                            <p:commandButton style="font-size: 12px;background-color: orange;margin-right: 5px;border-radius: 5px" value="Update" 
+                                                             update=":userProfileForm" 
+                                                             actionListener="#{userProfileBean.updateUserPassword}" />
+                                            <p:commandButton ajax="false" style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 5px" value="Back" action="MKRHome"/> 
+                                        </p:panelGrid>
+                                    </f:facet>  
+                                </h:panelGrid>
+                                <p:messages closable="true"/>
+                            </p:panel>
+                        </p:tab>
+                    </p:tabView>
+                </h:form>
+
+                <div id="footer">Copyright © 2003 of Math Kangaroo in USA, NFP Inc. All Rights Reserved.</div>
+            </div>
+        </div>
+    </h:body>
+</html>
+
+

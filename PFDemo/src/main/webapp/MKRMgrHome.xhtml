@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Math Kangaroo Manager Home</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="css/maincss.css" rel="stylesheet" type="text/css"/>        
+        <link href="css/newcss.css" rel="stylesheet" type="text/css"/>
+        <link href="css/newcss1.css" rel="stylesheet" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript">
+
+            window.onload = function()
+            {
+                var separator = " - ";
+                var dateTime = new Date();
+                var formattedDateTime = dateTime.toLocaleDateString();
+                var divObject = document.getElementById("dateTimeValue");
+                divObject.innerHTML = formattedDateTime;
+            };
+        </script>
+    </h:head>
+    <h:body>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{userLogin.isManagerLoggedIn}" />  
+        </f:metadata>
+        <div id="wrapper">
+            <ui:include src="main_header.html"/>
+            <div class="container">
+                <h:form id ="mainform" >
+                    <h:outputLabel styleClass="logotxt5" style="font-weight: normal;text-align: center;" value="Manager Home Page" />
+                    <p:panel rendered="#{userLogin.userLogged}" style="float:right;padding-right: 30px;border:none;">
+                        <h:outputLabel style="font-weight: normal;text-align: center;" value="Welcome, #{userLogin.manager.firstName} #{userLogin.manager.lastName}!" />
+                        <p:spacer width="25px"/>
+                        <p:commandLink ajax="false" rendered="#{userLogin.userLogged}" action="MKRHome" >
+                            <h:outputText value="User Page" style="font-size: 12px;color:blue;" />
+                        </p:commandLink>
+                        <p:spacer width="25px"/>
+                        <p:commandLink ajax="false" rendered="#{userLogin.adminLogged}" action="MKRAdminHome" >
+                            <h:outputText value="Admin Page" style="font-size: 12px;color:blue;" />
+                        </p:commandLink>
+                        <p:spacer width="25px"/>
+                        <p:commandLink actionListener="#{userLogin.logOff()}" update="mainform" >
+                            <h:outputText value="Log off" style="font-size: 12px;color:blue;" />
+                        </p:commandLink>
+                    </p:panel>
+                    <p:panel style="border:none;min-height: 400px;margin-top:50px">
+                        <h:outputLabel value="ROLE: " style=""/>
+                        <h:outputLabel value="#{userLogin.manager.managerRole} MANAGER" style="font-size: 12px; font-weight: bold;color: deeppink"/>
+                        <p:spacer width="10px" />
+                        <h:outputLabel rendered="#{userLogin.manager.primaryManager and userLogin.manager.agreementStatus != 'Y' }"
+                            value="You must submit a primary manager agreement to enable full functionality" style="font-size: 12px; color:black;"/>
+                        <p:spacer width="100%" height="15px"/>
+                        <h:panelGrid columns="2" columnClasses="column1,column2">
+                            <p:commandLink ajax="false" action="MKRMgrCenters" disabled="#{userLogin.manager.primaryManager and userLogin.manager.agreementStatus != 'Y' }" >
+                                <h:outputText value="Manage my center(s)"
+                                              style="font-size: 16px;color:blue;" />
+                            </p:commandLink>
+                            <h:outputText style="font-family: verdana;font-size:12px;font-weight: lighter;color:black;" value="Manage center session(s) or suporting manager(s)" />
+                            <p:commandLink rendered="#{userLogin.manager.primaryManager}" disabled="#{userLogin.manager.primaryManager and userLogin.manager.agreementStatus != 'Y' }" 
+                                           ajax="false" action="MKRMgrCenterConfirmation" >
+                                <h:outputText value="Center Readiness Confirmation" 
+                                              style="font-size: 16px;color:blue;" />
+                            </p:commandLink>
+                            <h:outputText rendered="#{userLogin.manager.primaryManager}" style="font-family: verdana;font-size: 12px;font-weight: lighter;color:black;" value="Confirm readiness of center(s)" />
+                            <p:commandLink rendered="#{userLogin.manager.primaryManager}" ajax="false" action="MKRMgrAgreement" >
+                                <h:outputText value="Manager's Agreement" 
+                                              style="font-size: 16px;color:blue;" />
+                            </p:commandLink>
+                            <h:outputText rendered="#{userLogin.manager.primaryManager}" style="font-family: verdana;font-size: 12px;font-weight: lighter;color:black;" value="Review and submit manager's agreement" />
+                            <p:commandLink ajax="false" action="MKRMgrCentersSessions" 
+                                           disabled="#{userLogin.manager.primaryManager and userLogin.manager.agreementStatus != 'Y' }" >
+                                <h:outputText value="Center Registered Students"
+                                              style="font-size: 16px;color:blue;" />
+                            </p:commandLink>
+                            <h:outputText style="font-family: verdana;font-size: 12px;font-weight: lighter;color:black;" value="Display center registered students for all sessions" />
+                            <p:commandLink ajax="false" action="MKRMgrCheckinCenters" disabled="#{!userLogin.studentCheckinOpen}" >
+                                <h:outputText value="Competition Student Check-in"
+                                              style="font-size: 16px;color:blue;"/>
+                            </p:commandLink>
+                            <h:outputText style="font-family: verdana;font-size: 12px;font-weight: lighter;color:black;" value="Check-in students before competition" />
+                            <p:commandLink ajax="false" action="MKRManagerProfile" >
+                                <h:outputText value="Update Manager Profile" 
+                                              style="font-size: 16px;color:blue;"/>
+                            </p:commandLink>
+                            <h:outputText style="font-family: verdana;font-size: 12px;font-weight: lighter;color:black;" value="Change your profile info or password" />
+                        </h:panelGrid>
+                        <p:spacer height="50px" width="100%"/>
+                        <h:outputLabel value="This registration year we have introduced a brand new student registration functionality as well as a new Manage Page. As a manager you already have a user account. The information for both should be the same, however, for some of you could be diferent as a result of the past functionality. You can still log on to the system either using 'User Log on' page, or 'Manager Log on' page and have one same access to both functionalities. Use the top right link close to the 'Log Off' link in order to switch from the manager to the user page and vice versa." style="color: darkgray;font-size: 12px; font-weight: bold;"/>
+                    </p:panel>
+                </h:form>
+                <div id="footer">Copyright © 2003 of Math Kangaroo in USA, NFP Inc. All Rights Reserved.</div>
+            </div>
+        </div>
+    </h:body>
+</html>
+
+

@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Math Kangaroo Manager's Centers</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="css/maincss.css" rel="stylesheet" type="text/css"/>        
+        <link rel="stylesheet" href="css/newcss.css" type="text/css"/>
+        <link rel="stylesheet" href="css/newcss1.css" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript">
+
+            window.onload = function()
+            {
+                var separator = " - ";
+                var dateTime = new Date();
+                var formattedDateTime = dateTime.toLocaleDateString();
+                var divObject = document.getElementById("dateTimeValue");
+                divObject.innerHTML = formattedDateTime;
+            };
+        </script>
+    </h:head>
+    <h:body>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{userLogin.isManagerLoggedIn}" />  
+        </f:metadata>
+        <div id="wrapper">
+            <ui:include src="main_header.html"/>
+            <div class="container">
+                <h:form id ="mainform" >
+                    <h:outputLabel styleClass="logotxt5" style="font-weight: normal;text-align: center;" value="Manager's Centers" />
+                    <p:panel rendered="#{userLogin.managerLogged}" style="float:right;padding-right: 30px;border:none;">
+                        <h:outputLabel style="font-weight: normal;text-align: center;" value="Welcome, #{userLogin.manager.firstName} #{userLogin.manager.lastName}!" />
+                        <p:spacer width="25px"/>
+                        <p:commandLink actionListener="#{userLogin.logOff()}" update="mainform" >
+                            <h:outputText value="Log off" style="font-size: 14px;color:blue;" />
+                        </p:commandLink>
+                    </p:panel>
+                    <p:panel style="border:none;margin-top: 50px;min-height: 400px;">
+                        <p:panel style="border:none;">
+                            <h:outputText style="font-size: 14px;" value="As a primary center manager of Math Kangaroo Center, please confirm all MK centers that are assigned to you. Without the confirmation a center will not be accessible for student registration." />
+                        </p:panel>
+                        <p:spacer width="100%" height="10px"/>
+
+                        <p:dataList value="#{managerConfirmationBean.myPrimaryCenters}" var="center" type="definition" >
+                            <f:facet name="header">
+                                Centers Confirmation Status:
+                            </f:facet>
+                            <h:outputLabel value="#{center.locationCode}  #{center.locationNameAndAddress}" style="margin-left: 15px;margin-top: 10px;display:inline-block"/>
+                            <p:commandLink update=":confirmCenterForm" oncomplete="PF('dlgConfirmCenter').show()" style="margin-top: 10px;margin-right: 5px;float: right;color: red" 
+                                           disabled="#{center.locationConfirmationStatus == 'Y' || !center.managerPrimary || !managerConfirmationBean.centerConfirmationModeActive}">
+                                <h:outputLabel value="#{managerConfirmationBean.confirmCenterText(center)}"/>
+                                <f:setPropertyActionListener value="#{center}" target="#{managerConfirmationBean.selectedCenter}" />
+                            </p:commandLink>
+                        </p:dataList>
+                        <p:messages id="msgs"/>  
+                        <p:spacer width="100%" height="10px"/>
+                        <p:commandButton style="font-size: 14px;background-color: orange;margin-left: 5px;border-radius: 5px" 
+                                         value="Back" 
+                                         action="MKRMgrHome" /> 
+                    </p:panel>
+                </h:form>
+
+                <p:dialog id="dialogConfirm" widgetVar="dlgConfirmCenter" modal="true" header="CONFIRMATION:">
+                    <h:form id="confirmCenterForm">
+                        <p:panel styleClass="centeredItemsPanel" >
+                            <p:panelGrid columns="1" style="border: none;">
+                                <h:outputLabel value="Confirm #{managerConfirmationBean.selectedCenter.locationName} center rediness?"/>
+                                <h:panelGroup>
+                                    <p:commandButton value="Yes" oncomplete="dlgConfirmCenter.hide()" 
+                                                     actionListener="#{managerConfirmationBean.confirmCenter()}" styleClass="ui-priority-primary" update=":mainform" 
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px"/> 
+                                    <p:spacer width="10px"/>
+                                    <p:commandButton value="No" oncomplete="dlgConfirmCenter.hide()" 
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px"/>
+                                </h:panelGroup>
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <div id="footer">Copyright © 2003 of Math Kangaroo in USA, NFP Inc. All Rights Reserved.</div>
+            </div>
+        </div>
+    </h:body>
+</html>
+
+

@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Math Kangaroo Admin New Centers</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="css/maincss.css" rel="stylesheet" type="text/css"/>        
+        <link rel="stylesheet" href="css/newcss.css" type="text/css"/>
+        <link rel="stylesheet" href="css/newcss1.css" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript">
+
+            window.onload = function()
+            {
+                var separator = " - ";
+                var dateTime = new Date();
+                var formattedDateTime = dateTime.toLocaleDateString();
+                var divObject = document.getElementById("dateTimeValue");
+                divObject.innerHTML = formattedDateTime;
+            };
+        </script>
+    </h:head>
+    <h:body>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{userLogin.isAdminLoggedIn}" />  
+        </f:metadata>
+        <div id="wrapper">
+            <ui:include src="main_header.html"/>
+            <div class="container">
+                <h:form id ="mainform" >
+                    <h:outputLabel styleClass="logotxt5" style="font-weight: normal;text-align: center;" value="Administrator New Center Requests" />
+                    <p:panel rendered="#{userLogin.adminLogged}" style="float:right;padding-right: 30px;border:none;">
+                        <h:outputLabel style="font-weight: normal;text-align: center;" value="Welcome, #{userLogin.user.userFirstName} #{userLogin.user.userLastName}!" />
+                        <p:spacer width="25px"/>
+                        <p:commandLink actionListener="#{userLogin.logOff()}" update="mainform" >
+                            <h:outputText value="Log off" style="font-size: 14px;color:blue;" />
+                        </p:commandLink>
+                    </p:panel>
+                    <p:panel style="border:none;margin-top: 50px;min-height: 400px">
+                        <h:outputText style="font-size: 12px; font-weight: bold;color: darkgray" value="This functionality allows to create a new manager from the requestor user account, create a new center, or reject a new center request." />
+                        <p:spacer width="100%" height="10px"/>
+                        <p:panel styleClass="generalPanelGridStyle">
+                            <h:outputText style="font-size: 16px;font-weight: bold" value="New Center Requests"/>
+                        </p:panel>
+                        <p:dataTable styleClass="registeredStudentsTableStyle" var="newCenter" value="#{adminNewCenterRequestBean.newCenters}" 
+                                     style="margin-top: 30px;margin-left: 20px;margin-right: 20px"
+                                     emptyMessage="There is no new center requests.">  
+                            <p:column headerText="Name" >  
+                                <p:commandLink ajax="false" action="MKRAdminNewCenter" disabled="#{newCenter.converted == 'Y'}">
+                                    <h:outputText style="color: blue;font-weight: bold;font-size: 12px" 
+                                                  title="Display and create center"
+                                                  value="#{newCenter.locationName}" />
+                                    <f:setPropertyActionListener value="#{newCenter}" target="#{adminBean.newCenter}" />  
+                                </p:commandLink>
+                            </p:column>  
+                            <p:column headerText="Name" >  
+                                <h:outputText value="#{newCenter.locationName}" />  
+                            </p:column>  
+                            <p:column headerText="Address1" >  
+                                <h:outputText value="#{newCenter.locationAddress1}" />  
+                            </p:column>  
+                            <p:column headerText="Address2" >  
+                                <h:outputText value="#{newCenter.locationAddress2}" />  
+                            </p:column>  
+                            <p:column headerText="City" >  
+                                <h:outputText value="#{newCenter.locationCity}" />  
+                            </p:column>  
+                            <p:column headerText="State" >  
+                                <h:outputText value="#{newCenter.locationState}" />  
+                            </p:column>  
+                            <p:column headerText="Zip code" >  
+                                <h:outputText value="#{newCenter.locationZipcode}" />  
+                            </p:column>  
+                            <p:column headerText="Number Of Sessions" >  
+                                <h:outputText value="#{newCenter.locationSessions.size()}" />  
+                            </p:column>  
+                            <p:column headerText="Requestor" >  
+                                <h:outputText value="#{newCenter.converted}" />  
+                            </p:column>  
+                        </p:dataTable>
+                        <p:panel styleClass="generalPanelGridStyle">
+                            <h:outputText style="font-size: 12px;" value="Click on the center name to approve or reject a request."/>
+                        </p:panel>
+                        <p:commandButton ajax="false" style="font-size: 14px;background-color: orange;margin-left: 5px;border-radius: 5px" 
+                                         value="Back" 
+                                         action="MKRAdminHome" /> 
+
+                    </p:panel>
+                </h:form>
+
+
+                <div id="footer">Copyright © 2003 of Math Kangaroo in USA, NFP Inc. All Rights Reserved.</div>
+            </div>
+        </div>
+    </h:body>
+</html>
+
+

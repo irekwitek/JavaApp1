@@ -1,0 +1,54 @@
+/* 
+    Document   : mkresults
+    Created on : May 1, 2016, 5:09:37 PM
+    Author     : irek
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+.nationResultsTable .ui-sortable-column, .nationResultsTable .ui-state-default {
+    background-color: #d0f4fc;
+    font-size: 14px;
+}
+.nationResultsTable .ui-column-filter {
+    background-color: white;
+}
+
+.nationResultsTable table {
+    font-size: 12px;
+    
+}
+
+.statesResultsTable .ui-sortable-column, .statesResultsTable .ui-state-default {
+    background-color: #ffcccc;
+    font-size: 14px;
+}
+.statesResultsTable .ui-column-filter {
+    background-color: white;
+}
+
+.statesResultsTable table {
+    font-size: 12px;
+    
+}
+
+.awardsTable .ui-state-default {
+    background-color: #66ff66;
+    font-size: 14px;
+}
+
+.awardsTable table {
+    font-size: 12px;
+    width: 60%;
+    
+}
+
+.buttonsPanel td {
+    border-style: none;
+}
+
+.buttonsPanel {
+    border: none;
+    text-align: center;
+    margin: 20px;  
+}

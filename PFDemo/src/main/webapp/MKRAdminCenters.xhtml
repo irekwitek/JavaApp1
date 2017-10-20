@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Math Kangaroo Admin Centers</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="css/maincss.css" rel="stylesheet" type="text/css"/>        
+        <link rel="stylesheet" href="css/newcss.css" type="text/css"/>
+        <link rel="stylesheet" href="css/newcss1.css" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript">
+
+            window.onload = function()
+            {
+                var separator = " - ";
+                var dateTime = new Date();
+                var formattedDateTime = dateTime.toLocaleDateString();
+                var divObject = document.getElementById("dateTimeValue");
+                divObject.innerHTML = formattedDateTime;
+            };
+        </script>
+    </h:head>
+    <h:body>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{userLogin.isAdminLoggedIn}" />  
+        </f:metadata>
+        <div id="wrapper">
+            <ui:include src="main_header.html"/>
+            <div class="container">
+                <h:form id ="mainform" >
+                    <h:outputLabel styleClass="logotxt5" style="font-weight: normal;text-align: center;" value="Admin - Center Search" />
+                    <p:panel rendered="#{userLogin.adminLogged}" style="float:right;padding-right: 30px;border:none;">
+                        <h:outputLabel style="font-weight: normal;text-align: center;" value="Welcome, #{userLogin.user.userFirstName} #{userLogin.user.userLastName}!" />
+                        <p:spacer width="25px"/>
+                        <p:commandLink actionListener="#{userLogin.logOff()}" update="mainform" >
+                            <h:outputText value="Log off" style="font-size: 14px;color:blue;" />
+                        </p:commandLink>
+                    </p:panel>
+                    <p:panel style="border:none;margin-top: 50px;min-height: 400px">
+                        <p:panel styleClass="adminSearchPanel" style="width: 40%" header="Provide criteria for center search">
+                            <p:panelGrid id="criteria" columns="2" columnClasses="column1,column2" styleClass="generalPanelStyle2" >
+                                <h:outputLabel value="Center Code: " style="font-weight: normal;font-size: 12px"/>  
+                                <p:inputText value="#{adminCentersBean.centerCodeSearch}" title="Enter as many first characters and needed."/> 
+                                <h:outputLabel value="Center Name: " style="font-weight: normal;font-size: 12px"/>  
+                                <p:inputText value="#{adminCentersBean.centerNameSearch}" title="Provide part of center name. It will be searched anywhere in the centers' names."/> 
+                            </p:panelGrid>
+                            <p:messages closable="true" />
+                            <p:commandButton ajax="true" style="font-size: 10px;background-color: #ccc;border-radius: 5px" 
+                                             value="Find" id="find"
+                                             action="#{adminCentersBean.searchCenters}"
+                                             update=":mainform"/> 
+                            <p:spacer width="10px" />
+                            <p:commandButton ajax="true" style="font-size: 10px;background-color: #ccc;border-radius: 5px" 
+                                             value="Clear" 
+                                             action="#{adminCentersBean.clearCriteria}"
+                                             update="criteria"/> 
+                        </p:panel>
+                        <p:spacer width="100%" height="20px" />
+                        <p:panel style="border: none">
+                            <p:panel styleClass="generalPanelGridStyle" >
+                                <h:outputLabel value="Center Search Results" style="font-weight: bold;font-size: 14px"/>  
+                            </p:panel>
+                            <p:dataTable styleClass="searchTableStyle" var="center" value="#{adminCentersBean.adminCenters}" 
+                                         paginator="true" rows="14"
+                                         style="margin-top: 10px;margin-left: 10px;margin-right: 10px"
+                                         emptyMessage="No results found."> 
+                                <p:column headerText="Center Code" sortBy="#{center.locationCode}" >  
+                                    <p:commandLink title="" ajax="false" action="MKRAdminCenter">
+                                        <h:outputText style="color: blue;font-weight: bold;font-size: 12px" 
+                                                      title="Update this center data"
+                                                      value="#{center.locationCode}" />
+                                        <f:setPropertyActionListener value="#{center}" target="#{userLogin.selectedCenter}" />  
+                                    </p:commandLink>
+                                </p:column>  
+                                <p:column headerText="Center" sortBy="#{center.locationName}">  
+                                    <h:outputText style="font-weight: normal;font-size: 11px"
+                                        value="#{center.locationNameAndAddress}" />  
+                                </p:column>  
+                                <p:column headerText="Active / Confirmed">  
+                                    <h:outputText value="#{center.active} / #{center.locationConfirmationStatus}" />  
+                                </p:column>  
+                            <p:column headerText="Sessions"> 
+                                <p:dataList value="#{center.locationSessions}" var="ses" styleClass="managerDataList" type="unordered" >
+                                        <h:outputText style="font-weight: normal;font-size: 10px" 
+                                                      value="#{ses.sessionInfo} - #{ses.sessionStatus == 0 ? 'Public' : 'Private'}" />
+                                </p:dataList>
+                            </p:column>  
+                            </p:dataTable>
+                            <p:panel styleClass="generalPanelGridStyle">
+                                <h:outputText style="font-size: 12px;" value="To display and update center data click on the Center Code link."/>
+                            </p:panel>
+                        </p:panel>
+                        <p:commandButton ajax="false" style="font-size: 14px;background-color: orange;margin-left: 5px;margin-top: 15px;border-radius: 5px" 
+                                         value="Back" 
+                                         action="MKRAdminHome" /> 
+
+                    </p:panel>
+                    <p:blockUI block=":mainform" trigger="find" />
+                </h:form>
+                <div id="footer">Copyright © 2003 of Math Kangaroo in USA, NFP Inc. All Rights Reserved.</div>
+            </div>
+        </div>
+    </h:body>
+</html>
+
+

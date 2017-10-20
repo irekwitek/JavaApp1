@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Math Kangaroo Admin New Center</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="css/maincss.css" rel="stylesheet" type="text/css"/>        
+        <link rel="stylesheet" href="css/newcss.css" type="text/css"/>
+        <link rel="stylesheet" href="css/newcss1.css" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript">
+
+            window.onload = function()
+            {
+                var separator = " - ";
+                var dateTime = new Date();
+                var formattedDateTime = dateTime.toLocaleDateString();
+                var divObject = document.getElementById("dateTimeValue");
+                divObject.innerHTML = formattedDateTime;
+            };
+        </script>
+    </h:head>
+    <h:body>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{userLogin.isAdminLoggedIn}" />  
+        </f:metadata>
+        <div id="wrapper">
+            <ui:include src="main_header.html"/>
+            <div class="container">
+                <h:form id ="mainform" >
+                    <h:outputLabel styleClass="logotxt5" style="font-weight: normal;text-align: center;" value="Admin New Center Detail" />
+                    <p:panel rendered="#{userLogin.adminLogged}" style="float:right;padding-right: 30px;border:none;">
+                        <h:outputLabel style="font-weight: normal;text-align: center;" value="Welcome, #{userLogin.user.userFirstName} #{userLogin.user.userLastName}!" />
+                        <p:spacer width="25px"/>
+                        <p:commandLink actionListener="#{userLogin.logOff()}" update="mainform" >
+                            <h:outputText value="Log off" style="font-size: 14px;color:blue;" />
+                        </p:commandLink>
+                    </p:panel>
+                    <p:panel style="border:none;margin-top: 40px;min-height: 400px">
+                        <p:panel styleClass="generalPanelGridStyle">
+                            <h:outputText style="font-size: 16px;font-weight: bold" value="#{adminBean.newCenter.locationName}"/>
+                        </p:panel>
+                        <p:panel styleClass="generalPanelGridStyle">
+                            <h:outputLabel style="font-size: 14px; font-weight: normal;" value="USER REQUESTOR: " />
+                            <h:outputLabel style="font-size: 12px; font-weight: bold;color:red" value="#{adminBean.userRequestor.userFirstName} #{adminBean.userRequestor.userLastName} [#{adminBean.userRequestor.userID}]" />
+                        </p:panel>
+                        <p:panel styleClass="generalPanelGridStyle">
+                            <h:outputLabel style="font-size: 14px; font-weight: normal;" value="MANAGER REQUESTOR: " />
+                            <h:outputLabel rendered="#{adminBean.leaderRequestor != null }" style="font-size: 12px; font-weight: bold;color:red" value="#{adminBean.leaderRequestor.firstName} #{adminBean.leaderRequestor.lastName} [#{adminBean.leaderRequestor.leaderID}]" />
+                            <h:outputLabel rendered="#{adminBean.leaderRequestor == null }" style="font-size: 12px; font-weight: bold;color:red" value="NONE" />
+                            <p:commandButton rendered="#{adminBean.leaderRequestor == null }" style="margin-left: 10px;font-size: 12px;background-color: orange;border-radius: 5px" 
+                                             value="Create Manager from requestor"
+                                             update=":mainform"
+                                             actionListener="#{adminNewCenterRequestBean.createNewManager()}" />
+                        </p:panel>
+                        <p:messages closable="true"/>
+                        <p:separator/>
+                        <p:panelGrid columns="2" columnClasses="column1,column2">
+                            <h:outputLabel value="Generated Center Code: " />  
+                            <p:inputText value="#{adminBean.newCenter.locationCode}" disabled="true"/>  
+                            <h:outputLabel value="Generated Center Registration Code: " />  
+                            <p:inputText value="#{adminBean.newCenter.locationRegistrationCode}" disabled="true"/>  
+                            <h:outputLabel value="Center Name: " />  
+                            <p:inputText value="#{adminBean.newCenter.locationName}"
+                                         size="50"/>  
+                            <h:outputLabel value="Address1: " />  
+                            <p:inputText value="#{adminBean.newCenter.locationAddress1}"/>  
+                            <h:outputLabel value="Address2: " />  
+                            <p:inputText value="#{adminBean.newCenter.locationAddress2}"/>  
+                            <h:outputLabel value="City: " />  
+                            <p:inputText value="#{adminBean.newCenter.locationCity}"/>  
+                            <h:outputLabel value="State: " />  
+                            <p:inputText value="#{adminBean.newCenter.locationState}"/>  
+                            <h:outputLabel value="Comment: " />  
+                            <p:inputText value="#{adminBean.newCenter.comment}"/>  
+                            <h:outputLabel value="Region USA: " />  
+                            <p:inputText value="#{adminBean.newCenter.locationCountryRegion}"/>  
+                            <h:outputLabel value="Region State: " />  
+                            <p:inputText value="#{adminBean.newCenter.locationStateRegion}"/>  
+                            <h:outputLabel value="Established: " />  
+                            <p:inputText value="#{adminBean.newCenter.established}"/>  
+                            <h:outputLabel value="Director UserId: " />  
+                            <p:inputMask value="#{adminBean.newCenter.directorUserId}" mask="?99999"/>  
+                        </p:panelGrid>
+                        <p:dataTable styleClass="registeredStudentsTableStyle" var="ses" value="#{adminBean.newCenter.locationSessions}" 
+                                     style="margin-top: 30px;margin-left: 50px;margin-right: 50px">
+                            <p:column headerText="Session" >  
+                                <h:outputText value="#{ses.sessionName}" />
+                            </p:column>  
+                            <p:column headerText="Time" >  
+                                <h:outputText value="#{ses.competitionTimeFriendly}" />  
+                            </p:column>  
+                            <p:column headerText="Seat Capacity" >  
+                                <h:outputText value="#{ses.seatCapacity}" />  
+                            </p:column>  
+                            <p:column headerText="Levels Offered" >  
+                                <h:outputText value="#{ses.levels}" />  
+                            </p:column>  
+                            <p:column headerText="Status" >  
+                                <h:outputText value="#{userLogin.commonData.getCenterStatusName(ses.sessionStatus)}" />  
+                            </p:column>  
+                        </p:dataTable>
+
+                        <p:panel style="border:none;margin-top: 20px"> 
+                            <p:commandButton style="font-size: 12px;background-color: orange;border-radius: 5px" 
+                                             value="Create New Center"
+                                             disabled="#{adminBean.leaderRequestor == null || !adminNewCenterRequestBean.canCreateCenter }"
+                                             update=":mainform"
+                                             actionListener="#{adminNewCenterRequestBean.createNewCenter()}" />
+                            <p:spacer width="10px"/>
+                            <p:commandButton style="font-size: 12px;background-color: red;border-radius: 5px" 
+                                             onclick="dlgConfirmReject.show()"
+                                             value="Reject This Request"
+                                             update=":formConfirmReject" />
+                            <p:spacer width="10px"/>
+                            <p:commandButton ajax="false" style="font-size: 12px;background-color: orange;border-radius: 5px" 
+                                             value="Back" action="MKRAdminNewCenterRequests"/> 
+                        </p:panel>
+                    </p:panel>
+                </h:form>
+
+                <p:dialog id="dialogConfirmReject" widgetVar="dlgConfirmReject" modal="true" header="REQUEST REJECTION:">
+                    <h:form id="formConfirmReject">
+                        <p:panel styleClass="centeredItemsPanel" >
+                            <p:panelGrid columns="1" style="border: none;text-align: center">
+                                <h:outputLabel value="You are about to reject request for a new MK center"/>
+                                <h:outputLabel value="Enter the reason for rejection in the comment and click Reject button"/>
+                                <p:inputTextarea rows="5" cols="30" value="#{adminBean.newCenter.comment}" style="width: 250px;height: 100px" />
+                                <h:panelGroup>
+                                    <p:commandButton value="Reject" oncomplete="dlgConfirmReject.hide()" 
+                                                     action="#{adminNewCenterRequestBean.rejectRequest()}" styleClass="ui-priority-primary" 
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" /> 
+                                    <p:spacer width="10px"/>
+                                    <p:commandButton value="No" oncomplete="dlgConfirmReject.hide()" 
+                                                     style="font-size: 12px;background-color: orange;margin-right: 10px;border-radius: 10px" />
+                                </h:panelGroup>
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+
+                <div id="footer">Copyright © 2003 of Math Kangaroo in USA, NFP Inc. All Rights Reserved.</div>
+            </div>
+        </div>
+    </h:body>
+</html>
+
+
